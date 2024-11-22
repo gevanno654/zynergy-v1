@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zynergy/core/config/theme/app_theme.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Scheduled Notification App',
+      theme: AppTheme.lightTheme,
       home: SplashScreen(),
     );
   }
