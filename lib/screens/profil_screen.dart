@@ -180,6 +180,7 @@ class ProfilScreen extends StatelessWidget {
                                   const Text(
                                     'On',
                                     style: TextStyle(
+                                        fontSize: 14,
                                         color: AppColors.darkGrey,
                                         fontWeight: FontWeight.w500),
                                   ),
@@ -203,6 +204,7 @@ class ProfilScreen extends StatelessWidget {
                                   const Text(
                                     'On',
                                     style: TextStyle(
+                                        fontSize: 14,
                                         color: AppColors.darkGrey,
                                         fontWeight: FontWeight.w500),
                                   ),
@@ -239,7 +241,7 @@ class ProfilScreen extends StatelessWidget {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
+                          backgroundColor: AppColors.danger,
                           padding: const EdgeInsets.symmetric(
                               vertical: 12, horizontal: 16),
                           shape: RoundedRectangleBorder(
@@ -297,41 +299,4 @@ class ProfilScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class CurvedShapePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.black
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-
-    // Starting point at top-left
-    path.moveTo(0, 24);
-
-    // Top-left curve
-    path.quadraticBezierTo(0, 0, 24, 0);
-
-    // Line to top-right minus corner
-    path.lineTo(size.width - 24, 0);
-
-    // Top-right curve
-    path.quadraticBezierTo(size.width, 0, size.width, 24);
-
-    // Line to bottom-right
-    path.lineTo(size.width, size.height);
-
-    // Line to bottom-left
-    path.lineTo(0, size.height);
-
-    // Close the path
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
