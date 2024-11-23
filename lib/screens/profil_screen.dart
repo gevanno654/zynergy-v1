@@ -26,147 +26,312 @@ class ProfilScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // Header Section
-          Container(
-            width: double.infinity, // Full device width
-            height: 240, // Fixed height for the header
-            decoration: const BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment(0.7, -1), // near the top right
-                radius: 1,
-
-                colors: [
-                  Color(0xFF4AF5CE), // Teal gradient start
-                  AppColors.primary, // Teal-blue gradient end
-                ],
-                stops: <double>[0.0, 1.0],
-              ),
-            ),
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.person,
-                    size: 50,
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(height: 10),
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment(0.7, -1), // near the top right
+              radius: 1,
+              colors: [
+                Color(0xFF4AF5CE), // Teal gradient start
+                AppColors.primary, // Teal-blue gradient end
               ],
+              stops: <double>[0.0, 1.0],
             ),
           ),
-          // Main Content
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(30),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 64),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundColor: AppColors.secondary,
+                      child: ClipOval(
+                        child: SvgPicture.asset(
+                          AppVectors.iconUser, // Replace with your SVG path
+                          height:
+                              100, // Scale the SVG to fit within the CircleAvatar
+                          width: 100,
+                          fit: BoxFit
+                              .cover, // Ensures the SVG scales proportionally
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Health Condition
-                  const Row(
+
+              // Main Content
+              // Main Content
+              Expanded(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 28),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
+                  ),
+                  child: ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Icon(Icons.favorite, color: Colors.teal),
-                      SizedBox(width: 10),
-                      Expanded(
+                      // Health Status Card
+                      InkWell(
+                        onTap: () {
+                          // Action when the health button is pressed
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => InformasiPribadiScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.secondary,
+                            borderRadius: BorderRadius.circular(16.0),
+                            border: Border.all(
+                              color: AppColors.lightGrey,
+                              width: 1.0,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    child: SvgPicture.asset(
+                                      width: 48,
+                                      height: 48,
+                                      AppVectors.iconHeart,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12.0),
+                                  const Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Dela April Liana",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14.0,
+                                          color: AppColors.black,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Text(
+                                        "Kondisi Sehat Sekali",
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const Icon(
+                                Icons.arrow_forward_ios,
+                                color: AppColors.darkGrey,
+                                size: 20.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+                      // Settings Card
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
+                          border: Border.all(
+                            color: AppColors.lightGrey,
+                            width: 1,
+                          ),
+                        ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Dela April Liana",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                            ListTile(
+                              leading:
+                                  SvgPicture.asset(AppVectors.iconStopWatch),
+                              title: const Text(
+                                'Pengingat',
+                                style: TextStyle(
+                                    color: AppColors.darkGrey,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'On',
+                                    style: TextStyle(
+                                        color: AppColors.darkGrey,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Icon(Icons.chevron_right,
+                                      color: AppColors.darkGrey),
+                                ],
                               ),
                             ),
-                            Text(
-                              "Kondisi Sehat Sekali",
-                              style: TextStyle(
-                                color: Colors.teal,
+                            ListTile(
+                              leading: SvgPicture.asset(AppVectors.iconAlarm),
+                              title: const Text(
+                                'Alarm',
+                                style: TextStyle(
+                                    color: AppColors.darkGrey,
+                                    fontWeight: FontWeight.w500),
                               ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'On',
+                                    style: TextStyle(
+                                        color: AppColors.darkGrey,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Icon(Icons.chevron_right,
+                                      color: AppColors.darkGrey),
+                                ],
+                              ),
+                            ),
+                            ListTile(
+                              leading: SvgPicture.asset(AppVectors.iconLetter),
+                              title: const Text(
+                                'Hubungi Kami',
+                                style: TextStyle(
+                                    color: AppColors.darkGrey,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Icon(Icons.chevron_right,
+                                  color: AppColors.darkGrey),
                             ),
                           ],
                         ),
                       ),
-                      Icon(Icons.arrow_forward_ios, size: 16),
-                    ],
-                  ),
-                  const Divider(height: 30, thickness: 1),
-                  // Reminders
-                  ListTile(
-                    leading: Icon(Icons.notifications, color: Colors.grey[700]),
-                    title: const Text("Pengingat"),
-                    trailing: const Text("On"),
-                  ),
-                  const Divider(height: 1),
-                  // Alarm
-                  ListTile(
-                    leading: Icon(Icons.alarm, color: Colors.grey[700]),
-                    title: const Text("Alarm"),
-                    trailing: const Text("On"),
-                  ),
-                  const Divider(height: 1),
-                  // Contact Us
-                  ListTile(
-                    leading: Icon(Icons.email, color: Colors.grey[700]),
-                    title: const Text("Hubungi Kami"),
-                  ),
-                  const Spacer(),
-                  // Logout Button
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.logout, color: Colors.white),
-                      label: const Text("Keluar"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      const SizedBox(height: 32),
+                      // Logout Button
+                      ElevatedButton.icon(
+                        onPressed: () => _logout(context),
+                        icon: const Icon(Icons.logout, color: Colors.white),
+                        label: const Text(
+                          'Keluar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 50,
-                          vertical: 15,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Social Media Links
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.facebook),
-                        onPressed: () {},
-                        color: Colors.blue,
+
+                      const SizedBox(height: 32),
+                      // Social Media Section
+                      const Text(
+                        'Dukung dan Ikuti Kami',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.darkGrey,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      IconButton(
-                        icon: SvgPicture.asset(AppVectors.iconInstagram),
-                        onPressed: () {},
-                        color: Colors.pink,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.code),
-                        onPressed: () {},
-                        color: Colors.black,
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _socialButton(AppVectors.iconInstagram),
+                          const SizedBox(width: 12),
+                          _socialButton(AppVectors.iconFacebook),
+                          const SizedBox(width: 12),
+                          _socialButton(AppVectors.iconTwitter),
+                          const SizedBox(width: 12),
+                          _socialButton(AppVectors.iconGithub),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
+
+  Widget _socialButton(String icon) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.lightGrey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: SvgPicture.asset(
+        icon,
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+}
+
+class CurvedShapePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppColors.black
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+
+    // Starting point at top-left
+    path.moveTo(0, 24);
+
+    // Top-left curve
+    path.quadraticBezierTo(0, 0, 24, 0);
+
+    // Line to top-right minus corner
+    path.lineTo(size.width - 24, 0);
+
+    // Top-right curve
+    path.quadraticBezierTo(size.width, 0, size.width, 24);
+
+    // Line to bottom-right
+    path.lineTo(size.width, size.height);
+
+    // Line to bottom-left
+    path.lineTo(0, size.height);
+
+    // Close the path
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

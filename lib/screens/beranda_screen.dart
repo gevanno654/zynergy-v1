@@ -49,9 +49,6 @@ class _BerandaScreenState extends State<BerandaScreen> {
         return false; // Mencegah pengguna kembali ke halaman sebelumnya
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(_titles[_currentIndex]),
-        ),
         body: IndexedStack(
           index: _currentIndex,
           children: _screens,
@@ -83,8 +80,10 @@ class _BerandaScreenState extends State<BerandaScreen> {
           ],
           selectedItemColor: Color(0xFF1FC29D), // Warna font yang dipilih
           unselectedItemColor: Colors.grey, // Warna font yang tidak dipilih
-          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold), // Gaya font yang dipilih
-          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal), // Gaya font yang tidak dipilih
+          selectedLabelStyle:
+              TextStyle(fontWeight: FontWeight.bold), // Gaya font yang dipilih
+          unselectedLabelStyle: TextStyle(
+              fontWeight: FontWeight.normal), // Gaya font yang tidak dipilih
           showSelectedLabels: true, // Menampilkan label yang dipilih
           showUnselectedLabels: true, // Menampilkan label yang tidak dipilih
         ),

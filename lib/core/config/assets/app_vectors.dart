@@ -11,4 +11,9 @@ class AppVectors {
   static const String iconGithub = '${basepath}github$format';
   static const String iconTwitter = '${basepath}x-twitter$format';
   static const String iconFacebook = '${basepath}facebook$format';
+  static const String iconHeart = '${basepath}heart$format';
+  static const String iconUser = '${basepath}user$format';
+  static const String iconLetter = '${basepath}letter$format';
+  static const String iconStopWatch = '${basepath}stopwatch$format';
+  static const String iconAlarm = '${basepath}alarm$format';
 }

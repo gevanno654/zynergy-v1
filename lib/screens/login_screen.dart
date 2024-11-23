@@ -112,6 +112,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _login,
                 child: Text('Login'),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BerandaScreen()),
+                  );
+                },
+                child: Text('Skip'),
+              ),
               SizedBox(height: 20),
               TextButton(
                 onPressed: () {

@@ -5,4 +5,5 @@ class AppColors {
   static const secondary = Color(0xffFFFFFF);
   static const darkGrey = Color(0xff3F3F3F);
   static const black = Color(0xff000000);
+  static const lightGrey = Color(0xFFDFDFDF);
 }
