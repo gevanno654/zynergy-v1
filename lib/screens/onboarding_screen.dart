@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zynergy/core/config/assets/app_vectors.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -15,23 +16,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<Map<String, String>> _pages = [
     {
       'title': 'Kesehatan itu investasi untuk\nmasa depan',
-      'description': 'Mulai dari langkah kecil bersama kami, karena hidup aktif dan sehat itu keren!',
-      'image': 'assets/page1.svg',
+      'description':
+          'Mulai dari langkah kecil bersama kami, karena hidup aktif dan sehat itu keren!',
+      'image': AppVectors.page1,
     },
     {
       'title': 'Step 2',
       'description': 'This is the second step of onboarding.',
-      'image': 'assets/page2.svg', // Path to SVG image
+      'image': AppVectors.page2, // Path to SVG image
     },
     {
       'title': 'Step 3',
       'description': 'This is the third step of onboarding.',
-      'image': 'assets/page3.svg', // Path to SVG image
+      'image': AppVectors.page3, // Path to SVG image
     },
     {
       'title': 'Step 4',
       'description': 'This is the fourth step of onboarding.',
-      'image': 'assets/page4.svg', // Path to SVG image
+      'image': AppVectors.page4, // Path to SVG image
     },
   ];
 
@@ -83,26 +85,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               _pages.length,
-                  (index) => _buildDot(index: index),
+              (index) => _buildDot(index: index),
             ),
           ),
           ElevatedButton(
             onPressed: _currentPage == _pages.length - 1
                 ? () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('isOnboardingComplete', true);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
-            }
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setBool('isOnboardingComplete', true);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  }
                 : () {
-              _pageController.nextPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeIn,
-              );
-            },
-            child: Text(_currentPage == _pages.length - 1 ? 'Get Started' : 'Next'),
+                    _pageController.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                    );
+                  },
+            child: Text(
+                _currentPage == _pages.length - 1 ? 'Get Started' : 'Next'),
           ),
           SizedBox(height: 20),
         ],
@@ -110,7 +114,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _buildPage({required String title, required String description, required String image}) {
+  Widget _buildPage(
+      {required String title,
+      required String description,
+      required String image}) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -121,9 +128,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             height: 200,
           ),
           SizedBox(height: 20),
-          Text(title, textAlign:TextAlign.center, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xff3F3F3F))),
+          Text(title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff3F3F3F))),
           SizedBox(height: 20),
-          Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Color(0x703F3F3F))),
+          Text(description,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Color(0x703F3F3F))),
         ],
       ),
     );
