@@ -43,8 +43,8 @@ class ProfilScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 64),
+              Container(
+                height: 240 - 64,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

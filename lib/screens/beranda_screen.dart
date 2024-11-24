@@ -49,6 +49,10 @@ class _BerandaScreenState extends State<BerandaScreen> {
         return false; // Mencegah pengguna kembali ke halaman sebelumnya
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(_titles[_currentIndex]),
+          centerTitle: true,
+        ),
         body: IndexedStack(
           index: _currentIndex,
           children: _screens,
