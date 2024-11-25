@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zynergy/core/config/assets/app_vectors.dart';
 import 'package:zynergy/core/config/theme/app_colors.dart';
+import 'package:zynergy/screens/pengaturan_screen.dart';
 import 'login_screen.dart';
 import 'informasi_pribadi_screen.dart';
 import '../api/api_service.dart';
@@ -165,6 +166,13 @@ class ProfilScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PengaturanScreen()));
+                              },
                               leading:
                                   SvgPicture.asset(AppVectors.iconStopWatch),
                               title: const Text(

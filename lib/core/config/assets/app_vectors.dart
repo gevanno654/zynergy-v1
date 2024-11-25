@@ -15,9 +15,14 @@ class AppVectors {
   static const String iconUser = '${basepath}user$format';
   static const String iconLetter = '${basepath}letter$format';
   static const String iconStopWatch = '${basepath}stopwatch$format';
+  static const String iconStopWatchBold = '${basepath}stopwatch-bold$format';
   static const String iconAlarm = '${basepath}alarm$format';
   static const String iconHeartBlue = '${basepath}heart-blue$format';
   static const String iconHeartYellow = '${basepath}heart-yellow$format';
   static const String iconHeartRed = '${basepath}heart-red$format';
   static const String iconEye = '${basepath}eye$format';
+  static const String iconSoundWave = '${basepath}soundwave$format';
+  static const String iconMusicNote = '${basepath}music-note$format';
+  static const String iconMuted = '${basepath}muted$format';
+  static const String iconCoffee = '${basepath}coffee$format';
 }
