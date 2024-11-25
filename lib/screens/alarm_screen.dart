@@ -3,17 +3,17 @@ import 'package:flutter_svg/svg.dart';
 import 'package:zynergy/core/config/assets/app_vectors.dart';
 import 'package:zynergy/core/config/theme/app_colors.dart';
 import 'package:zynergy/screens/components/custom_modal.dart';
-import 'package:zynergy/screens/pemberitahuan_screen.dart';
+import 'package:zynergy/screens/suara_alarm_screen.dart';
 
-class PengaturanScreen extends StatefulWidget {
+class AlarmScreen extends StatefulWidget {
+  const AlarmScreen({super.key});
+
   @override
-  _PengaturanScreenState createState() => _PengaturanScreenState();
+  State<AlarmScreen> createState() => _AlarmScreenState();
 }
 
-class _PengaturanScreenState extends State<PengaturanScreen> {
+class _AlarmScreenState extends State<AlarmScreen> {
   bool pengingat = true;
-  bool suaraPengingat = true;
-  bool modeHening = false;
   bool modeAkhirPekan = false;
 
   @override
@@ -107,41 +107,6 @@ class _PengaturanScreenState extends State<PengaturanScreen> {
               ),
               child: Column(
                 children: [
-                  // Suara Pengingat
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(AppVectors.iconSoundWave),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Suara Pengingat',
-                              style: TextStyle(
-                                  color: AppColors.darkGrey,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                        Switch(
-                          value: modeHening,
-                          activeColor: AppColors.secondary,
-                          activeTrackColor: AppColors.primary,
-                          onChanged: (value) {
-                            setState(() {
-                              modeHening = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
                   // Suara
                   ListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -179,61 +144,10 @@ class _PengaturanScreenState extends State<PengaturanScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PemberitahuanScreen()));
+                              builder: (context) => SuaraAlarmScreen()));
                     },
                   ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  // Mode Hening
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(AppVectors.iconMuted),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Mode Hening',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.darkGrey),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                CustomModal.show(context,
-                                    message:
-                                        'Mengaktifkan mode ini akan menonaktifkan suara notifikasi.');
-                              },
-                              child: Icon(
-                                Icons.info_outline,
-                                size: 20,
-                                color: AppColors.darkGrey,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Switch(
-                              value: modeHening,
-                              activeColor: AppColors.secondary,
-                              activeTrackColor: AppColors.primary,
-                              onChanged: (value) {
-                                setState(() {
-                                  modeHening = value;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+
                   SizedBox(
                     height: 16,
                   ),

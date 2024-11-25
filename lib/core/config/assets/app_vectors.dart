@@ -25,4 +25,5 @@ class AppVectors {
   static const String iconMusicNote = '${basepath}music-note$format';
   static const String iconMuted = '${basepath}muted$format';
   static const String iconCoffee = '${basepath}coffee$format';
+  static const String iconFilter = '${basepath}filter$format';
 }

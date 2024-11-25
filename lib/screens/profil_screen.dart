@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zynergy/core/config/assets/app_vectors.dart';
 import 'package:zynergy/core/config/theme/app_colors.dart';
+import 'package:zynergy/screens/alarm_screen.dart';
 import 'package:zynergy/screens/pengaturan_screen.dart';
 import 'login_screen.dart';
 import 'informasi_pribadi_screen.dart';
@@ -181,23 +182,30 @@ class ProfilScreen extends StatelessWidget {
                                     color: AppColors.darkGrey,
                                     fontWeight: FontWeight.w500),
                               ),
-                              trailing: Row(
+                              trailing: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'On',
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: AppColors.darkGrey,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Icon(Icons.chevron_right,
                                       color: AppColors.darkGrey),
                                 ],
                               ),
                             ),
                             ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AlarmScreen()));
+                              },
                               leading: SvgPicture.asset(AppVectors.iconAlarm),
                               title: const Text(
                                 'Alarm',
@@ -205,17 +213,17 @@ class ProfilScreen extends StatelessWidget {
                                     color: AppColors.darkGrey,
                                     fontWeight: FontWeight.w500),
                               ),
-                              trailing: Row(
+                              trailing: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'On',
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: AppColors.darkGrey,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Icon(Icons.chevron_right,
                                       color: AppColors.darkGrey),
                                 ],
@@ -229,7 +237,7 @@ class ProfilScreen extends StatelessWidget {
                                     color: AppColors.darkGrey,
                                     fontWeight: FontWeight.w500),
                               ),
-                              trailing: Icon(Icons.chevron_right,
+                              trailing: const Icon(Icons.chevron_right,
                                   color: AppColors.darkGrey),
                             ),
                           ],
