@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zynergy/core/config/assets/app_vectors.dart';
 import 'package:zynergy/core/config/theme/app_colors.dart';
+import 'package:zynergy/screens/ubah_jenis_kelamin.dart';
+import 'package:zynergy/screens/ubah_kata_sandi.dart';
+import 'package:zynergy/screens/ubah_nama_screen.dart';
 import '../api/api_service.dart'; // Import ApiService
 
 class InformasiPribadiScreen extends StatefulWidget {
@@ -121,7 +124,10 @@ class _InformasiPribadiScreenState extends State<InformasiPribadiScreen> {
                           ],
                         ),
                         onTap: () {
-                          // Handle edit action (e.g., navigate to edit screen)
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UbahNamaScreen()));
                         },
                       ),
                       ListTile(
@@ -165,7 +171,10 @@ class _InformasiPribadiScreenState extends State<InformasiPribadiScreen> {
                           ],
                         ),
                         onTap: () {
-                          // Handle edit action (e.g., navigate to edit screen)
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UbahJenisKelamin()));
                         },
                       ),
                       ListTile(
@@ -221,7 +230,10 @@ class _InformasiPribadiScreenState extends State<InformasiPribadiScreen> {
                           ],
                         ),
                         onTap: () {
-                          // Handle edit action (e.g., navigate to edit screen)
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UbahKataSandi()));
                         },
                       ),
                     ],
@@ -267,17 +279,9 @@ class _InformasiPribadiScreenState extends State<InformasiPribadiScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 1,
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.lightGrey)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

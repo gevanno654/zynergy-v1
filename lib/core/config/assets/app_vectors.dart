@@ -19,4 +19,5 @@ class AppVectors {
   static const String iconHeartBlue = '${basepath}heart-blue$format';
   static const String iconHeartYellow = '${basepath}heart-yellow$format';
   static const String iconHeartRed = '${basepath}heart-red$format';
+  static const String iconEye = '${basepath}eye$format';
 }

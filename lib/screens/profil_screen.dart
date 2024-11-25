@@ -33,7 +33,7 @@ class ProfilScreen extends StatelessWidget {
           decoration: const BoxDecoration(
             gradient: RadialGradient(
               center: Alignment(0.7, -1), // near the top right
-              radius: 1,
+              radius: 0.4,
               colors: [
                 Color(0xFF4AF5CE), // Teal gradient start
                 AppColors.primary, // Teal-blue gradient end
@@ -66,7 +66,6 @@ class ProfilScreen extends StatelessWidget {
                 ),
               ),
 
-              // Main Content
               // Main Content
               Expanded(
                 flex: 1,
