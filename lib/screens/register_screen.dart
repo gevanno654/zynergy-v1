@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart'; // Import LoginScreen
+import 'verification_screen.dart'; // Import VerificationScreen
 import '../api/api_service.dart';
+import '../core/config/theme/app_colors.dart'; // Import app_colors.dart
+import '../core/config/strings/app_text.dart'; // Import app_text.dart
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -29,35 +31,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (response.success) {
         await _apiService.saveToken(response.data['token']);
-        _showSuccessDialog();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => VerificationScreen()),
+        );
       } else {
         _showErrorDialog(response.message);
       }
     }
-  }
-
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Pendaftaran Berhasil'),
-          content: Text('Akun Anda berhasil didaftarkan.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Tutup dialog
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _showErrorDialog(String message) {
@@ -96,34 +77,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
               width: screenWidth,
               height: screenHeight,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF1AD7AC), // Warna awal
-                    Color(0xFF1FC29D), // Warna akhir
-                  ],
-                  transform: GradientRotation(280 * (3.1415926535 / 180)),
-                ),
+                color: AppColors.primary,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+              child: Stack(
                 children: [
-                  SizedBox(height: 50),
-                  Image.asset(
-                    'assets/Logo 1.png',
-                    width: 250,
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Ambil langkah pertama untuk mulai peduli kesehatanmu.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+                  Positioned(
+                    top: -90,
+                    right: -180,
+                    child: Container(
+                      width: 500,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          center: Alignment.center,
+                          colors: [
+                            Color(0xFF2CE4BB),
+                            AppColors.primary,
+                          ],
+                          stops: [0.4, 1.0],
+                          radius: 0.3,
+                        ),
+                      ),
                     ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 50),
+                          Image.asset(
+                            'assets/images/Logo 1.png',
+                            width: 250,
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            RegisterText.subtitle,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
+              ),
+            ),
+
+            // Elemen abu-abu di belakang elemen putih
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 900),
+              curve: Curves.easeInOutCubic,
+              top: keyboardHeight > 0 ? 50 : 190,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20.0),
+                width: screenWidth,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300], // Warna abu-abu
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(32.0),
+                    topRight: Radius.circular(32.0),
+                  ),
+                ),
               ),
             ),
 
@@ -154,9 +178,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            'Daftar Akun Baru',
+                            RegisterText.title,
                             style: TextStyle(
-                              color: Color(0xFF3F3F3F),
+                              color: AppColors.darkGrey,
                               fontWeight: FontWeight.w600,
                               fontSize: 22,
                             ),
@@ -164,18 +188,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           SizedBox(height: 20),
 
                           // Form registrasi
-                          // textField 'Name'
+                          // textField 'Nama'
                           TextFormField(
                             controller: _nameController,
                             decoration: InputDecoration(
-                              labelText: 'Name',
-                              labelStyle: TextStyle(color: Color(0x903F3F3F), fontSize: 18),
+                              labelText: RegisterText.nameLabel,
+                              labelStyle: TextStyle(color: AppColors.darkGrey.withOpacity(0.6), fontSize: 18),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)),
+                                borderSide: BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)),
+                                borderSide: BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
                               ),
                               errorBorder: OutlineInputBorder(
@@ -187,10 +211,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
-                            style: TextStyle(color: Color(0xFF3F3F3F)), // Warna teks abu-abu
+                            style: TextStyle(color: AppColors.darkGrey), // Warna teks abu-abu
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your name';
+                                return 'Ketik Nama Lengkap Anda!';
                               }
                               return null;
                             },
@@ -201,14 +225,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: TextStyle(color: Color(0x903F3F3F), fontSize: 18),
+                              labelText: RegisterText.emailLabel,
+                              labelStyle: TextStyle(color: AppColors.darkGrey.withOpacity(0.6), fontSize: 18),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)),
+                                borderSide: BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)),
+                                borderSide: BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
                               ),
                               errorBorder: OutlineInputBorder(
@@ -220,29 +244,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
-                            style: TextStyle(color: Color(0xFF3F3F3F)), // Warna teks abu-abu
+                            style: TextStyle(color: AppColors.darkGrey), // Warna teks abu-abu
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
+                                return 'Ketik Email Anda!';
                               }
                               return null;
                             },
                           ),
                           SizedBox(height: 10),
 
-                          // textField 'Password'
+                          // textField 'Kata Sandi'
                           TextFormField(
                             controller: _passwordController,
                             decoration: InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: TextStyle(color: Color(0x903F3F3F), fontSize: 18), // Warna label abu-abu transparan
+                              labelText: RegisterText.passwordLabel,
+                              labelStyle: TextStyle(color: AppColors.darkGrey.withOpacity(0.6), fontSize: 18),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)), // Warna border hijau
-                                borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
+                                borderSide: BorderSide(color: AppColors.primary),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)), // Warna border hijau
-                                borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
+                                borderSide: BorderSide(color: AppColors.primary),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.red),
@@ -254,8 +278,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscureTextPassword ? Icons.visibility : Icons.visibility_off,
-                                  color: Color(0xFF3F3F3F), // Warna icon abu-abu
+                                  _obscureTextPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                  color: AppColors.darkGrey,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -264,30 +288,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 },
                               ),
                             ),
-                            style: TextStyle(color: Color(0xFF3F3F3F)), // Warna teks abu-abu
+                            style: TextStyle(color: AppColors.darkGrey),
                             obscureText: _obscureTextPassword,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your password';
+                                return 'Ketik Kata Sandi Anda!';
                               }
                               return null;
                             },
                           ),
                           SizedBox(height: 10),
 
-                          // textField 'Confirm Password'
+                          // textField 'Konfirmasi Kata Sandi'
                           TextFormField(
                             controller: _confirmPasswordController,
                             decoration: InputDecoration(
-                              labelText: 'Confirm Password',
-                              labelStyle: TextStyle(color: Color(0x903F3F3F), fontSize: 18), // Warna label abu-abu transparan
+                              labelText: RegisterText.confirmPasswordLabel,
+                              labelStyle: TextStyle(color: AppColors.darkGrey.withOpacity(0.6), fontSize: 18),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)), // Warna border hijau
-                                borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
+                                borderSide: BorderSide(color: AppColors.primary),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF1FC29D)), // Warna border hijau
-                                borderRadius: BorderRadius.circular(8.0), // Atur border radius di sini
+                                borderSide: BorderSide(color: AppColors.primary),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.red),
@@ -299,8 +323,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscureTextConfirmPassword ? Icons.visibility : Icons.visibility_off,
-                                  color: Color(0xFF3F3F3F), // Warna icon abu-abu
+                                  _obscureTextConfirmPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                  color: AppColors.darkGrey,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -309,66 +333,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 },
                               ),
                             ),
-                            style: TextStyle(color: Color(0xFF3F3F3F)), // Warna teks abu-abu
+                            style: TextStyle(color: AppColors.darkGrey),
                             obscureText: _obscureTextConfirmPassword,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please confirm your password';
+                                return 'Ketik Kata Sandi Anda!';
                               }
                               if (value != _passwordController.text) {
-                                return 'Passwords do not match';
+                                return 'Periksa Kembali, Kata Sandi Tidak cocok!';
                               }
                               return null;
                             },
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 40),
 
-                          // Button 'Register'
+                          // Button 'Daftar'
                           ElevatedButton(
                             onPressed: _register,
                             child: Text(
-                              'Daftar',
+                              RegisterText.registerButton,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF1FC29D), // Warna background hijau
-                              foregroundColor: Colors.white, // Warna teks putih
-                              minimumSize: Size(320, 50), // Ukuran button
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              minimumSize: Size(320, 50),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0), // Border radius
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
-
-                          // Button 'Sudah punya akun? Login disini'
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => LoginScreen()),
-                              );
-                            },
-                            child: Text(
-                              'Sudah punya akun? Login disini',
-                              style: TextStyle(
-                                color: Color(0xFF1FC29D),
-                                fontSize: 14,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white, // Warna background putih
-                              foregroundColor: Color(0xFF1FC29D), // Warna teks hijau
-                              minimumSize: Size(320, 50), // Ukuran button
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0), // Border radius
-                                side: BorderSide(color: Color(0xFF1FC29D)), // Outline warna hijau
-                              ),
-                            ),
-                          ),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),

@@ -5,8 +5,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../timezone_helper.dart';
-import 'onboarding_screen.dart';
-import 'login_screen.dart';
+import 'onboarding_screen.dart'; // Import onboarding_screen.dart
+import 'login_screen.dart'; // Import login_screen.dart
+import 'beranda_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -19,13 +20,41 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkOnboardingStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstInstall = prefs.getBool('isFirstInstall') ?? true;
     bool isOnboardingComplete = prefs.getBool('isOnboardingComplete') ?? false;
+    String? userToken = prefs.getString('userToken');
 
     Future.delayed(Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => isOnboardingComplete ? LoginScreen() : OnboardingScreen()),
-      );
+      if (isFirstInstall) {
+        // Jika pertama kali menginstal, tampilkan onboarding screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => OnboardingScreen()),
+        );
+        prefs.setBool('isFirstInstall', false);
+      } else {
+        if (isOnboardingComplete) {
+          if (userToken != null) {
+            // Jika sudah memiliki token, arahkan ke halaman beranda
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => BerandaScreen()),
+            );
+          } else {
+            // Jika belum memiliki token, arahkan ke halaman login
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          }
+        } else {
+          // Jika onboarding belum selesai, arahkan ke onboarding screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => OnboardingScreen()),
+          );
+        }
+      }
     });
   }
 
@@ -53,28 +82,39 @@ class _SplashScreenState extends State<SplashScreen> {
       {'id': 4, 'title': 'Notifikasi Makan Malam', 'body': 'Sudah waktunya makan malam!', 'hour': 18, 'minute': 0},
     ];
 
+    final prefs = await SharedPreferences.getInstance();
+    final now = tz.TZDateTime.now(tz.local);
+
     for (var notification in notifications) {
-      final now = DateTime.now();
-      final targetTime = DateTime(now.year, now.month, now.day, notification['hour'], notification['minute'], 0);
+      // Waktu target untuk notifikasi
+      final scheduledTime = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        notification['hour'],
+        notification['minute'],
+      );
 
-      tz.TZDateTime scheduledTime;
-      if (targetTime.isBefore(now)) {
-        scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(days: 1));
-        scheduledTime = tz.TZDateTime(tz.local, scheduledTime.year, scheduledTime.month, scheduledTime.day, notification['hour'], notification['minute'], 0);
-      } else {
-        scheduledTime = tz.TZDateTime(tz.local, targetTime.year, targetTime.month, targetTime.day, notification['hour'], notification['minute'], 0);
-      }
+      // Jika waktu yang dijadwalkan telah lewat, tambahkan satu hari
+      final nextTime = scheduledTime.isBefore(now)
+          ? scheduledTime.add(const Duration(days: 1))
+          : scheduledTime;
 
+      // Jadwalkan notifikasi
       await flutterLocalNotificationsPlugin.zonedSchedule(
         notification['id'],
         notification['title'],
         notification['body'],
-        scheduledTime,
+        nextTime,
         notificationDetails,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
         matchDateTimeComponents: DateTimeComponents.time,
       );
+
+      // Simpan ID notifikasi ke SharedPreferences
+      await prefs.setInt('notification_${notification['id']}', notification['id']);
     }
   }
 
@@ -89,8 +129,25 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: FlutterLogo(size: 100),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF1FC29D),
+              Color(0xFF0F5C4A),
+            ],
+            transform: GradientRotation(240 * 3.1415926535 / 180), // 240 derajat dalam radian
+          ),
+        ),
+        child: Center(
+          child: Image.asset(
+              'assets/images/icon.png',
+              width: 100,
+              height: 100
+          ),
+        ),
       ),
     );
   }
