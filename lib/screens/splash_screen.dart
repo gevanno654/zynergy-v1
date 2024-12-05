@@ -16,7 +16,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   Future<void> _checkOnboardingStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -76,10 +76,34 @@ class _SplashScreenState extends State<SplashScreen> {
     const notificationDetails = NotificationDetails(android: androidDetails);
 
     final List<Map<String, dynamic>> notifications = [
-      {'id': 1, 'title': 'Notifikasi Sarapan', 'body': 'Ingatlah untuk sarapan pagi!', 'hour': 7, 'minute': 0},
-      {'id': 2, 'title': 'Notifikasi Makan Siang', 'body': 'Sudah waktunya makan siang!', 'hour': 12, 'minute': 0},
-      {'id': 3, 'title': 'Notifikasi Minum Penambah Stamina', 'body': 'Minumlah air untuk menambah stamina!', 'hour': 15, 'minute': 0},
-      {'id': 4, 'title': 'Notifikasi Makan Malam', 'body': 'Sudah waktunya makan malam!', 'hour': 18, 'minute': 0},
+      {
+        'id': 1,
+        'title': 'Notifikasi Sarapan',
+        'body': 'Ingatlah untuk sarapan pagi!',
+        'hour': 7,
+        'minute': 0
+      },
+      {
+        'id': 2,
+        'title': 'Notifikasi Makan Siang',
+        'body': 'Sudah waktunya makan siang!',
+        'hour': 12,
+        'minute': 0
+      },
+      {
+        'id': 3,
+        'title': 'Notifikasi Minum Penambah Stamina',
+        'body': 'Minumlah air untuk menambah stamina!',
+        'hour': 15,
+        'minute': 0
+      },
+      {
+        'id': 4,
+        'title': 'Notifikasi Makan Malam',
+        'body': 'Sudah waktunya makan malam!',
+        'hour': 18,
+        'minute': 0
+      },
     ];
 
     final prefs = await SharedPreferences.getInstance();
@@ -109,12 +133,14 @@ class _SplashScreenState extends State<SplashScreen> {
         nextTime,
         notificationDetails,
         androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.wallClockTime,
         matchDateTimeComponents: DateTimeComponents.time,
       );
 
       // Simpan ID notifikasi ke SharedPreferences
-      await prefs.setInt('notification_${notification['id']}', notification['id']);
+      await prefs.setInt(
+          'notification_${notification['id']}', notification['id']);
     }
   }
 
@@ -138,15 +164,12 @@ class _SplashScreenState extends State<SplashScreen> {
               Color(0xFF1FC29D),
               Color(0xFF0F5C4A),
             ],
-            transform: GradientRotation(240 * 3.1415926535 / 180), // 240 derajat dalam radian
+            transform: GradientRotation(
+                240 * 3.1415926535 / 180), // 240 derajat dalam radian
           ),
         ),
         child: Center(
-          child: Image.asset(
-              'assets/images/icon.png',
-              width: 100,
-              height: 100
-          ),
+          child: Image.asset('assets/images/icon.png', width: 100, height: 100),
         ),
       ),
     );

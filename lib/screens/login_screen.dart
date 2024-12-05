@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:zynergy/api/api_response.dart';
 import 'beranda_screen.dart';
 import 'register_screen.dart';
+import 'package:http/http.dart' as http;
 import 'forget_password.dart';
 import '../api/api_service.dart';
 import '../core/config/assets/app_vectors.dart'; // Import app_vectors.dart
 import '../core/config/theme/app_colors.dart'; // Import app_colors.dart
 import '../core/config/strings/app_text.dart'; // Import app_text.dart
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -39,6 +43,58 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         _showErrorDialog(response.message);
       }
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+      ],
+    );
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        // print(googleAuth.accessToken);
+
+        // Send the id token to the backend
+        // final Dio dio = Dio();
+        // final response = await dio.post(
+        //   'http://192.168.100.4:8000/api/auth/google/callback',
+        //   data: {
+        //     'provider': 'google',
+        //     'access_provider_token': googleAuth.idToken
+        //   },
+        // );
+
+        // final response = await http.post(
+        //   Uri.parse('http://192.168.100.4:8000/api/auth/google/callback'),
+        //   headers: {'Content-Type': 'application/json'},
+        //   body: jsonEncode({
+        //     'provider': 'google',
+        //     'access_provider_token': googleAuth.accessToken
+        //   }),
+        // );
+        final response = await _apiService.signInGoogle(googleAuth.accessToken);
+
+        // Save the token locally
+        if (response.success) {
+          await _apiService.saveToken(response.data['token']);
+          await _apiService.getUserData(); // Simpan data pengguna setelah login
+
+          // Simpan token ke flutter_secure_storage
+          await _storage.write(
+              key: 'auth_token', value: response.data['token']);
+
+          _showSuccessDialog();
+        } else {
+          _showErrorDialog(response.message);
+        }
+      }
+    } catch (error) {
+      print(error);
     }
   }
 
@@ -112,7 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevent sheet from resizing with keyboard
+      resizeToAvoidBottomInset:
+          false, // Prevent sheet from resizing with keyboard
       body: SafeArea(
         child: Stack(
           children: [
@@ -215,7 +272,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: SingleChildScrollView(
                   child: Container(
                     width: screenWidth,
-                    padding: EdgeInsets.only(top: 32.0, bottom: 0.0, left: 20.0, right: 20.0),
+                    padding: EdgeInsets.only(
+                        top: 32.0, bottom: 0.0, left: 20.0, right: 20.0),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -237,13 +295,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _emailController,
                             decoration: InputDecoration(
                               labelText: LoginText.emailLabel,
-                              labelStyle: TextStyle(color: AppColors.darkGrey.withOpacity(0.6), fontSize: 18),
+                              labelStyle: TextStyle(
+                                  color: AppColors.darkGrey.withOpacity(0.6),
+                                  fontSize: 18),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: AppColors.primary),
+                                borderSide:
+                                    BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: AppColors.primary),
+                                borderSide:
+                                    BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               errorBorder: OutlineInputBorder(
@@ -270,13 +332,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _passwordController,
                             decoration: InputDecoration(
                               labelText: LoginText.passwordLabel,
-                              labelStyle: TextStyle(color: AppColors.darkGrey.withOpacity(0.6), fontSize: 18),
+                              labelStyle: TextStyle(
+                                  color: AppColors.darkGrey.withOpacity(0.6),
+                                  fontSize: 18),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: AppColors.primary),
+                                borderSide:
+                                    BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: AppColors.primary),
+                                borderSide:
+                                    BorderSide(color: AppColors.primary),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               errorBorder: OutlineInputBorder(
@@ -289,7 +355,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                  _obscureText
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
                                   color: AppColors.darkGrey,
                                 ),
                                 onPressed: () {
@@ -316,15 +384,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => ForgetPasswordScreen()),
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ForgetPasswordScreen()),
                                 );
                               },
                               child: Text(
                                 LoginText.forgotPassword,
                                 style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 14
-                                ),
+                                    color: AppColors.primary, fontSize: 14),
                               ),
                             ),
                           ),
@@ -356,7 +424,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => RegisterScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterScreen()),
                               );
                             },
                             child: Text(
@@ -392,7 +461,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Tombol 'Masuk dengan Google'
                           ElevatedButton(
                             onPressed: () {
-                              // Tambahkan logika untuk masuk dengan Google di sini
+                              signInWithGoogle();
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

@@ -107,21 +107,22 @@ class ArtikelScreen extends StatelessWidget {
                       _buildArticleCard(
                         imagePath: 'assets/images/thumbartikel1.png',
                         title: '5 Tips Sehat Ala Gen Z',
-                        onPressed: (){
+                        onPressed: () {
                           // Navigasi ke halaman artikel selengkapnya
                         },
                       ),
                       _buildArticleCard(
                         imagePath: 'assets/images/thumbartikel2.png',
-                        title: '5 Cara Meredakan Gangguan Kecemasan dengan Cepat',
-                        onPressed: (){
+                        title:
+                            '5 Cara Meredakan Gangguan Kecemasan dengan Cepat',
+                        onPressed: () {
                           // Navigasi ke halaman artikel selengkapnya
                         },
                       ),
                       _buildArticleCard(
                         imagePath: 'assets/images/thumbartikel3.png',
                         title: 'Nutrisi dan Manfaat Kesehatan Wortel',
-                        onPressed: (){
+                        onPressed: () {
                           // Navigasi ke halaman artikel selengkapnya
                         },
                       ),
@@ -157,7 +158,8 @@ class ArtikelScreen extends StatelessWidget {
               Container(
                 width: 110,
                 height: 110,
-                margin: EdgeInsets.only(left: 10.0, right: 4.0, bottom: 8.0, top: 8.0),
+                margin: EdgeInsets.only(
+                    left: 10.0, right: 4.0, bottom: 8.0, top: 8.0),
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(imagePath),
@@ -169,8 +171,7 @@ class ArtikelScreen extends StatelessWidget {
                         color: Colors.black.withOpacity(0.2),
                         spreadRadius: 0,
                         blurRadius: 4,
-                        offset: Offset(0, 0)
-                    ),
+                        offset: Offset(0, 0)),
                   ],
                 ),
               ),
@@ -198,7 +199,8 @@ class ArtikelScreen extends StatelessWidget {
                           child: ElevatedButton(
                             onPressed: onPressed,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary, // Menggunakan AppColors.primary
+                              backgroundColor: AppColors
+                                  .primary, // Menggunakan AppColors.primary
                               foregroundColor: Colors.white,
                               elevation: (0.0),
                               shape: RoundedRectangleBorder(
