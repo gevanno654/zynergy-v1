@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 import 'dart:math';
+=======
+>>>>>>> Stashed changes
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';

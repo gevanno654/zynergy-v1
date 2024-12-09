@@ -4,8 +4,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../core/config/strings/app_text.dart';
 import '../core/config/assets/app_vectors.dart';
 import '../core/config/theme/app_colors.dart'; // Impor app_colors.dart
+<<<<<<< Updated upstream
 
 class EditJadwalOlahragaScreen extends StatefulWidget {
+=======
+import '../api/api_service.dart'; // Impor ApiService
+import '../api/notification_service.dart'; // Impor NotificationService
+
+class EditJadwalOlahragaScreen extends StatefulWidget {
+  final Map<String, dynamic> initialData;
+
+  EditJadwalOlahragaScreen({required this.initialData});
+
+>>>>>>> Stashed changes
   @override
   _EditJadwalOlahragaScreenState createState() => _EditJadwalOlahragaScreenState();
 }
@@ -21,6 +32,23 @@ class _EditJadwalOlahragaScreenState extends State<EditJadwalOlahragaScreen> {
   List<int> _hours = List.generate(24, (index) => index);
   List<int> _minutes = List.generate(60, (index) => index);
 
+<<<<<<< Updated upstream
+=======
+  final ApiService _apiService = ApiService();
+  final NotificationService _notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedHour = widget.initialData['activity_hour'];
+    _selectedMinute = widget.initialData['activity_minute'];
+    _selectedFrequency = widget.initialData['activity_frequency'] == 1 ? 'Harian' : 'Sekali';
+    _isVibrationEnabled = widget.initialData['toggle_value'] == 1;
+    _isDeleteAfterRing = widget.initialData['toggle_value'] == 1;
+    _namaJadwalController.text = widget.initialData['activity_name'];
+  }
+
+>>>>>>> Stashed changes
   void _showTimePicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -58,11 +86,18 @@ class _EditJadwalOlahragaScreenState extends State<EditJadwalOlahragaScreen> {
                   },
                   children: _minutes.map((minute) {
                     return Center(
+<<<<<<< Updated upstream
                       child: Text(
                         minute.toString().padLeft(2, '0'),
                         style: TextStyle(fontSize: 18),
                       ),
                     );
+=======
+                        child: Text(
+                          minute.toString().padLeft(2, '0'),
+                          style: TextStyle(fontSize: 18),
+                        ));
+>>>>>>> Stashed changes
                   }).toList(),
                 ),
               ),
@@ -117,6 +152,72 @@ class _EditJadwalOlahragaScreenState extends State<EditJadwalOlahragaScreen> {
     );
   }
 
+<<<<<<< Updated upstream
+=======
+  Future<void> _saveJadwal() async {
+    final updatedData = {
+      'activity_name': _namaJadwalController.text,
+      'activity_hour': _selectedHour,
+      'activity_minute': _selectedMinute,
+      'activity_frequency': _selectedFrequency == 'Harian' ? 1 : 0,
+      'toggle_value': _isVibrationEnabled ? 1 : 0,
+    };
+
+    try {
+      final response = await _apiService.updateLightActivityReminder(widget.initialData['id'], updatedData);
+
+      if (response.success) {
+        // Cancel the old notification
+        await _notificationService.cancelNotification(widget.initialData['id']);
+
+        // Schedule the new notification
+        final now = DateTime.now();
+        final scheduledDate = DateTime(now.year, now.month, now.day, _selectedHour, _selectedMinute);
+        await _notificationService.scheduleNotification(
+          widget.initialData['id'],
+          'Pengingat Olahraga',
+          'Ingatlah untuk olahraga sesuai jadwal!',
+          scheduledDate,
+          _selectedFrequency,
+        );
+
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal menyimpan jadwal: ${response.message}')),
+        );
+      }
+    } catch (e) {
+      print('Error saving schedule: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan saat menyimpan jadwal: $e')),
+      );
+    }
+  }
+
+  Future<void> _deleteJadwal() async {
+    try {
+      // Cancel the notification before deleting the schedule
+      await _notificationService.cancelNotification(widget.initialData['id']);
+
+      final response = await _apiService.deleteLightActivityReminder(widget.initialData['id']);
+
+      if (response.success) {
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal menghapus jadwal: ${response.message}')),
+        );
+      }
+    } catch (e) {
+      print('Error deleting schedule: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan saat menghapus jadwal: $e')),
+      );
+    }
+  }
+
+>>>>>>> Stashed changes
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -315,10 +416,36 @@ class _EditJadwalOlahragaScreenState extends State<EditJadwalOlahragaScreen> {
               width: double.infinity,
               height: 40,
               child: ElevatedButton(
+<<<<<<< Updated upstream
                 onPressed: () {
                   // Handle save logic here
                   Navigator.of(context).pop();
                 },
+=======
+                onPressed: _deleteJadwal,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, // Warna tombol hapus
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: Text(
+                  'Hapus Jadwal',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              height: 40,
+              child: ElevatedButton(
+                onPressed: _saveJadwal,
+>>>>>>> Stashed changes
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary, // Menggunakan AppColors.primary
                   shape: RoundedRectangleBorder(

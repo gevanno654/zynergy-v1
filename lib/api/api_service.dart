@@ -7,7 +7,11 @@ import 'api_response.dart';
 import 'notification_service.dart';
 
 class ApiService {
+<<<<<<< Updated upstream
   static const String baseUrl = 'http://192.168.100.4:8000/api';
+=======
+  static const String baseUrl = 'https://api-zynergy.gevannoyoh.com/api';
+>>>>>>> Stashed changes
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final NotificationService _notificationService = NotificationService();
 
@@ -42,8 +46,12 @@ class ApiService {
     try {
       final token = await getToken();
       if (token == null) {
+<<<<<<< Updated upstream
         return ApiResponse(
             success: false, message: 'Token not found', data: null);
+=======
+        return ApiResponse(success: false, message: 'Token not found', data: null);
+>>>>>>> Stashed changes
       }
 
       final response = await http.post(
@@ -58,8 +66,12 @@ class ApiService {
       final responseData = jsonDecode(response.body);
       return ApiResponse.fromJson(responseData);
     } catch (e) {
+<<<<<<< Updated upstream
       return ApiResponse(
           success: false, message: 'Failed to verify email', data: null);
+=======
+      return ApiResponse(success: false, message: 'Failed to verify email', data: null);
+>>>>>>> Stashed changes
     }
   }
 
@@ -103,6 +115,34 @@ class ApiService {
       final responseBody = jsonDecode(response.body);
       throw Exception(
           'Failed to logout: ${responseBody['message'] ?? 'Unknown error'}');
+    }
+  }
+
+  Future<int> getUserId() async {
+    final userData = await getLocalUserData();
+    if (userData != null && userData.containsKey('id')) {
+      return userData['id'];
+    } else {
+      throw Exception('User ID not found');
+    }
+  }
+
+  Future<bool> hasPersonalizationData() async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/check-personalization-data'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['has_data'];
+    } else {
+      throw Exception('Failed to check personalization data');
     }
   }
 
@@ -239,8 +279,12 @@ class ApiService {
 
     if (response.statusCode != 200) {
       final responseBody = jsonDecode(response.body);
+<<<<<<< Updated upstream
       throw Exception(
           'Failed to save personalization data: ${responseBody['message'] ?? 'Unknown error'}');
+=======
+      throw Exception('Failed to save personalization data: ${responseBody['message'] ?? 'Unknown error'}');
+>>>>>>> Stashed changes
     }
   }
 
@@ -255,6 +299,7 @@ class ApiService {
     print('Meal Reminder Data: $mealReminder');
 
     // Ensure all required fields have valid values
+<<<<<<< Updated upstream
     if (mealReminder['meal_name'] == null ||
         mealReminder['meal_name'].isEmpty) {
       throw Exception('Meal name is required');
@@ -272,6 +317,18 @@ class ApiService {
     if (mealReminder['meal_frequency'] == null ||
         (mealReminder['meal_frequency'] != 0 &&
             mealReminder['meal_frequency'] != 1)) {
+=======
+    if (mealReminder['meal_name'] == null || mealReminder['meal_name'].isEmpty) {
+      throw Exception('Meal name is required');
+    }
+    if (mealReminder['meal_hour'] == null || mealReminder['meal_hour'] < 0 || mealReminder['meal_hour'] > 23) {
+      throw Exception('Meal hour must be between 0 and 23');
+    }
+    if (mealReminder['meal_minute'] == null || mealReminder['meal_minute'] < 0 || mealReminder['meal_minute'] > 59) {
+      throw Exception('Meal minute must be between 0 and 59');
+    }
+    if (mealReminder['meal_frequency'] == null || (mealReminder['meal_frequency'] != 0 && mealReminder['meal_frequency'] != 1)) {
+>>>>>>> Stashed changes
       throw Exception('Meal frequency must be 0 (once) or 1 (daily)');
     }
 
@@ -287,8 +344,12 @@ class ApiService {
     if (response.statusCode != 201) {
       try {
         final responseBody = jsonDecode(response.body);
+<<<<<<< Updated upstream
         throw Exception(
             'Failed to save meal reminder: ${responseBody['message'] ?? 'Unknown error'}');
+=======
+        throw Exception('Failed to save meal reminder: ${responseBody['message'] ?? 'Unknown error'}');
+>>>>>>> Stashed changes
       } catch (e) {
         throw Exception('Failed to save meal reminder: ${response.body}');
       }
@@ -302,8 +363,12 @@ class ApiService {
       final mealMinute = mealReminder['meal_minute'];
       final mealFrequency = mealReminder['meal_frequency'];
 
+<<<<<<< Updated upstream
       DateTime scheduledDate =
           DateTime(now.year, now.month, now.day, mealHour, mealMinute);
+=======
+      DateTime scheduledDate = DateTime(now.year, now.month, now.day, mealHour, mealMinute);
+>>>>>>> Stashed changes
 
       if (scheduledDate.isBefore(now)) {
         if (mealFrequency == 0) {
@@ -324,8 +389,12 @@ class ApiService {
     }
   }
 
+<<<<<<< Updated upstream
   Future<void> updateMealReminder(
       int id, Map<String, dynamic> mealReminder) async {
+=======
+  Future<void> updateMealReminder(int id, Map<String, dynamic> mealReminder) async {
+>>>>>>> Stashed changes
     final token = await getToken();
     if (token == null) {
       throw Exception('Token not found');
@@ -343,8 +412,12 @@ class ApiService {
     if (response.statusCode != 200) {
       try {
         final responseBody = jsonDecode(response.body);
+<<<<<<< Updated upstream
         throw Exception(
             'Failed to update meal reminder: ${responseBody['message'] ?? 'Unknown error'}');
+=======
+        throw Exception('Failed to update meal reminder: ${responseBody['message'] ?? 'Unknown error'}');
+>>>>>>> Stashed changes
       } catch (e) {
         throw Exception('Failed to update meal reminder: ${response.body}');
       }
@@ -369,8 +442,12 @@ class ApiService {
     if (response.statusCode != 200) {
       try {
         final responseBody = jsonDecode(response.body);
+<<<<<<< Updated upstream
         throw Exception(
             'Failed to update toggle value: ${responseBody['message'] ?? 'Unknown error'}');
+=======
+        throw Exception('Failed to update toggle value: ${responseBody['message'] ?? 'Unknown error'}');
+>>>>>>> Stashed changes
       } catch (e) {
         throw Exception('Failed to update toggle value: ${response.body}');
       }
@@ -394,8 +471,12 @@ class ApiService {
     } else {
       try {
         final responseBody = jsonDecode(response.body);
+<<<<<<< Updated upstream
         throw Exception(
             'Failed to load special schedules: ${responseBody['message'] ?? 'Unknown error'}');
+=======
+        throw Exception('Failed to load special schedules: ${responseBody['message'] ?? 'Unknown error'}');
+>>>>>>> Stashed changes
       } catch (e) {
         throw Exception('Failed to load special schedules: ${response.body}');
       }
@@ -420,12 +501,19 @@ class ApiService {
     }
   }
 
+<<<<<<< Updated upstream
   Future<ApiResponse> saveSleepReminder(
       Map<String, dynamic> sleepReminder) async {
     final token = await getToken();
     if (token == null) {
       return ApiResponse(
           success: false, message: 'Token not found', data: null);
+=======
+  Future<ApiResponse> saveSleepReminder(Map<String, dynamic> sleepReminder) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+>>>>>>> Stashed changes
     }
 
     final response = await http.post(
@@ -439,6 +527,7 @@ class ApiService {
 
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body);
+<<<<<<< Updated upstream
       return ApiResponse(success: true, message: 'Success', data: data);
     } else {
       return ApiResponse(
@@ -454,6 +543,61 @@ class ApiService {
     if (token == null) {
       return ApiResponse(
           success: false, message: 'Token not found', data: null);
+=======
+      final int id = data['id']; // Ambil id dari respons API
+
+      // Schedule notification after successfully saving sleep reminder
+      final now = DateTime.now();
+      final sleepHour = sleepReminder['sleep_hour'];
+      final sleepMinute = sleepReminder['sleep_minute'];
+      final wakeHour = sleepReminder['wake_hour'];
+      final wakeMinute = sleepReminder['wake_minute'];
+      final sleepFrequency = sleepReminder['sleep_frequency'] == 0 ? 'Sekali' : 'Harian';
+
+      DateTime sleepScheduledDate = DateTime(now.year, now.month, now.day, sleepHour, sleepMinute);
+      DateTime wakeScheduledDate = DateTime(now.year, now.month, now.day, wakeHour, wakeMinute);
+
+      if (sleepScheduledDate.isBefore(now)) {
+        if (sleepFrequency == 'Sekali') {
+          sleepScheduledDate = sleepScheduledDate.add(Duration(days: 1));
+        }
+      }
+
+      if (wakeScheduledDate.isBefore(now)) {
+        if (sleepFrequency == 'Sekali') {
+          wakeScheduledDate = wakeScheduledDate.add(Duration(days: 1));
+        }
+      }
+
+      print('Scheduling sleep notification: id=$id, frequency=$sleepFrequency');
+      _notificationService.scheduleNotification(
+        id, // Gunakan id sebagai notification_id
+        'Pengingat Tidur',
+        'Ingatlah untuk tidur sesuai jadwal!',
+        sleepScheduledDate,
+        sleepFrequency,
+      );
+
+      print('Scheduling wake notification: id=$id, frequency=$sleepFrequency');
+      _notificationService.scheduleNotificationWithCustomSound(
+        id + 1, // Gunakan id + 1 sebagai notification_id untuk alarm bangun
+        'Pengingat Bangun',
+        'Ingatlah untuk bangun sesuai jadwal!',
+        wakeScheduledDate,
+        sleepFrequency,
+      );
+
+      return ApiResponse(success: true, message: 'Success', data: data);
+    } else {
+      return ApiResponse(success: false, message: 'Failed to fetch sleep reminders', data: null);
+    }
+  }
+
+  Future<ApiResponse> updateSleepReminder(int id, Map<String, dynamic> sleepReminder) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+>>>>>>> Stashed changes
     }
 
     final response = await http.put(
@@ -469,18 +613,51 @@ class ApiService {
       final data = jsonDecode(response.body);
       return ApiResponse(success: true, message: 'Success', data: data);
     } else {
+<<<<<<< Updated upstream
       return ApiResponse(
           success: false,
           message: 'Failed to fetch sleep reminders',
           data: null);
+=======
+      return ApiResponse(success: false, message: 'Failed to fetch sleep reminders', data: null);
+    }
+  }
+
+  Future<void> updateToggleValueSleepReminder(int id, int toggleValue) async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/sleep-reminders/$id/toggle'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'toggle_value': toggleValue}),
+    );
+
+    if (response.statusCode != 200) {
+      try {
+        final responseBody = jsonDecode(response.body);
+        throw Exception('Failed to update toggle value: ${responseBody['message'] ?? 'Unknown error'}');
+      } catch (e) {
+        throw Exception('Failed to update toggle value: ${response.body}');
+      }
+>>>>>>> Stashed changes
     }
   }
 
   Future<ApiResponse> getSleepReminders() async {
     final token = await getToken();
     if (token == null) {
+<<<<<<< Updated upstream
       return ApiResponse(
           success: false, message: 'Token not found', data: null);
+=======
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+>>>>>>> Stashed changes
     }
 
     final response = await http.get(
@@ -494,6 +671,7 @@ class ApiService {
       final data = jsonDecode(response.body);
       return ApiResponse(success: true, message: 'Success', data: data);
     } else {
+<<<<<<< Updated upstream
       return ApiResponse(
           success: false,
           message: 'Failed to fetch sleep reminders',
@@ -501,3 +679,300 @@ class ApiService {
     }
   }
 }
+=======
+      return ApiResponse(success: false, message: 'Failed to fetch sleep reminders', data: null);
+    }
+  }
+
+  Future<ApiResponse> deleteSleepReminder(int id) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/sleep-reminders/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return ApiResponse(success: true, message: 'Success', data: null);
+    } else {
+      return ApiResponse(success: false, message: 'Failed to delete sleep reminder', data: null);
+    }
+  }
+
+  Future<ApiResponse> saveLightActivityReminder(Map<String, dynamic> lightActivityReminder) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/light-activity-reminders'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(lightActivityReminder),
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      return ApiResponse(success: true, message: 'Success', data: data);
+    } else {
+      final errorMessage = response.body;
+      return ApiResponse(success: false, message: errorMessage, data: null);
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchLightActivityReminders() async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/light-activity-reminders'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => item as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('Failed to load light activity reminders');
+    }
+  }
+
+  Future<ApiResponse> updateLightActivityReminder(int id, Map<String, dynamic> lightActivityReminder) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/light-activity-reminders/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(lightActivityReminder),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return ApiResponse(success: true, message: 'Success', data: data);
+    } else {
+      final errorMessage = response.body;
+      return ApiResponse(success: false, message: errorMessage, data: null);
+    }
+  }
+
+  Future<void> updateToggleValueLightActivityReminder(int id, int toggleValue) async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/light-activity-reminders/$id/toggle'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'toggle_value': toggleValue}),
+    );
+
+    if (response.statusCode != 200) {
+      try {
+        final responseBody = jsonDecode(response.body);
+        throw Exception('Failed to update toggle value: ${responseBody['message'] ?? 'Unknown error'}');
+      } catch (e) {
+        throw Exception('Failed to update toggle value: ${response.body}');
+      }
+    }
+  }
+
+  Future<ApiResponse> deleteLightActivityReminder(int id) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/light-activity-reminders/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return ApiResponse(success: true, message: 'Success', data: null);
+    } else {
+      final errorMessage = response.body;
+      return ApiResponse(success: false, message: errorMessage, data: null);
+    }
+  }
+
+  Future<ApiResponse> saveHealthCheckupReminder(Map<String, dynamic> healthCheckupReminder) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/health-checkup-reminders'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(healthCheckupReminder),
+    );
+
+    if (response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      return ApiResponse(success: true, message: 'Success', data: data);
+    } else {
+      final errorMessage = response.body;
+      return ApiResponse(success: false, message: errorMessage, data: null);
+    }
+  }
+
+  Future<ApiResponse> updateHealthCheckupReminder(int id, Map<String, dynamic> updatedData) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/health-checkup-reminders/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(updatedData),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return ApiResponse(success: true, message: 'Success', data: data);
+    } else {
+      return ApiResponse(success: false, message: 'Failed to update health checkup reminder', data: null);
+    }
+  }
+
+  Future<ApiResponse> getHealthCheckupReminders() async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/health-checkup-reminders'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return ApiResponse(success: true, message: 'Success', data: data);
+    } else {
+      return ApiResponse(success: false, message: 'Failed to fetch health checkup reminders', data: null);
+    }
+  }
+
+  Future<ApiResponse> deleteHealthCheckupReminder(int id) async {
+    final token = await getToken();
+    if (token == null) {
+      return ApiResponse(success: false, message: 'Token not found', data: null);
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/health-checkup-reminders/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return ApiResponse(success: true, message: 'Success', data: null);
+    } else {
+      return ApiResponse(success: false, message: 'Failed to delete health checkup reminder', data: null);
+    }
+  }
+
+
+  // Custom Notification fetch Data
+  Future<List<Map<String, dynamic>>> getSuggestMenus() async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/meal-reminders/suggest'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => item as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('Failed to load suggest menus');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getSuggestAvoids() async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/meal-reminders/suggest-avoids'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => item as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('Failed to load suggest avoids');
+    }
+  }
+
+  // Rekomendasi Artikel
+  Future<List<Map<String, dynamic>>> getSuggestedArticles() async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/articles/suggest'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    // Log status code dan body dari respons
+    print("Status Code: ${response.statusCode}");
+    print("Response Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((article) => article as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('Failed to load articles: ${response.statusCode}');
+    }
+  }
+}
+>>>>>>> Stashed changes

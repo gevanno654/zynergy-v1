@@ -8,8 +8,13 @@ import 'edit_jadwal_makan.dart';
 import '../core/config/strings/app_text.dart';
 import '../core/config/theme/app_colors.dart';
 import '../core/config/assets/app_vectors.dart';
+<<<<<<< Updated upstream
 import '../api/api_service.dart'; // Import ApiService
 import '../api/notification_service.dart'; // Import NotificationService
+=======
+import '../api/api_service.dart';
+import '../api/notification_service.dart';
+>>>>>>> Stashed changes
 
 class PengingatMakanScreen extends StatefulWidget {
   @override
@@ -22,7 +27,10 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
   bool _isMakanSiangEnabled = true;
   bool _isMakanMalamEnabled = true;
   bool _isCamilanEnabled = true;
+<<<<<<< Updated upstream
   bool _isJadwalKhusus1Enabled = true;
+=======
+>>>>>>> Stashed changes
 
   final ApiService _apiService = ApiService();
   final NotificationService _notificationService = NotificationService();
@@ -100,6 +108,7 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
     await prefs.setBool(key, value);
   }
 
+<<<<<<< Updated upstream
   void _enableAllSchedules() async {
     // Aktifkan notifikasi pada semua jadwal bawaan yang saat ini enabled
     if (_isSarapanEnabled) {
@@ -121,11 +130,48 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
       _notificationService.rescheduleNotificationIfNeeded(
         4, 'Notifikasi Camilan', 'Ingatlah untuk camilan sore!', DateTime(0, 0, 0, 15, 0),
       );
+=======
+  Future<List<Map<String, dynamic>>> _fetchSuggestMenus() async {
+    try {
+      return await _apiService.getSuggestMenus();
+    } catch (e) {
+      print("Error fetching suggest menus: $e");
+      return []; // Kembalikan daftar kosong jika terjadi error
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchSuggestAvoids() async {
+    try {
+      return await _apiService.getSuggestAvoids();
+    } catch (e) {
+      print("Error fetching suggest avoids: $e");
+      return []; // Kembalikan daftar kosong jika terjadi error
+    }
+  }
+
+  void _enableAllMealSchedules() async {
+    // Aktifkan notifikasi pada semua jadwal bawaan yang saat ini enabled
+    if (_isSarapanEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+    }
+    if (_isMakanSiangEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+    }
+    if (_isMakanMalamEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+    }
+    if (_isCamilanEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+>>>>>>> Stashed changes
     }
 
     // Aktifkan notifikasi untuk jadwal khusus yang enabled
     for (final schedule in _specialSchedules) {
+<<<<<<< Updated upstream
       if (schedule['toggle_value'] == 1) {
+=======
+      if (schedule['toggle_value'] == 1 && schedule['meal_frequency'] == 1) { // Periksa frekuensi harian
+>>>>>>> Stashed changes
         final scheduledDate = DateTime.now().copyWith(
           hour: schedule['meal_hour'],
           minute: schedule['meal_minute'],
@@ -136,6 +182,7 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
           'Pengingat Makan Khusus',
           'Saatnya makan: ${schedule['meal_name']}',
           scheduledDate,
+<<<<<<< Updated upstream
           schedule['meal_frequency'] == 1 ? 'Harian' : 'Sekali',
         );
       }
@@ -143,6 +190,20 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
   }
 
   void _disableAllNotifications() async {
+=======
+          'Harian', // Hanya jadwalkan ulang untuk harian
+        );
+      }
+    }
+
+    // Panggil fungsi untuk memperbarui konten notifikasi dinamis
+    List<Map<String, dynamic>> suggestMenus = await _apiService.getSuggestMenus();
+    List<Map<String, dynamic>> suggestAvoids = await _apiService.getSuggestAvoids();
+    _notificationService.updateNotificationContent(suggestMenus, suggestAvoids);
+  }
+
+  void _disableAllMealNotifications() async {
+>>>>>>> Stashed changes
     // Nonaktifkan semua notifikasi pada jadwal bawaan
     _notificationService.cancelNotification(1); // Sarapan
     _notificationService.cancelNotification(2); // Makan Siang
@@ -155,6 +216,7 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
     }
   }
 
+<<<<<<< Updated upstream
   Future<void> _cancelNotification(String key) async {
     final prefs = await SharedPreferences.getInstance();
     final id = prefs.getInt('notification_$key');
@@ -166,6 +228,8 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
     }
   }
 
+=======
+>>>>>>> Stashed changes
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -201,10 +265,17 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
 
                     if (_isPengingatMakanEnabled) {
                       // Aktifkan semua jadwal yang enabled
+<<<<<<< Updated upstream
                       _enableAllSchedules();
                     } else {
                       // Nonaktifkan semua notifikasi
                       _disableAllNotifications();
+=======
+                      _enableAllMealSchedules();
+                    } else {
+                      // Nonaktifkan semua notifikasi
+                      _disableAllMealNotifications();
+>>>>>>> Stashed changes
                     }
                   },
                   child: Card(
@@ -244,6 +315,7 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
                                   _isPengingatMakanEnabled = value;
                                   _saveToggleValue('isPengingatMakanEnabled', value);
                                 });
+<<<<<<< Updated upstream
                   
                                 if (value) {
                                   // Aktifkan semua jadwal yang enabled
@@ -251,6 +323,15 @@ class _PengingatMakanScreenState extends State<PengingatMakanScreen> {
                                 } else {
                                   // Nonaktifkan semua notifikasi
                                   _disableAllNotifications();
+=======
+
+                                if (value) {
+                                  // Aktifkan semua jadwal yang enabled
+                                  _enableAllMealSchedules();
+                                } else {
+                                  // Nonaktifkan semua notifikasi
+                                  _disableAllMealNotifications();
+>>>>>>> Stashed changes
                                 }
                               },
                               activeColor: AppColors.lightGrey,

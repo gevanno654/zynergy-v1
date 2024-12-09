@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+<<<<<<< Updated upstream
+=======
+import '../core/config/assets/app_vectors.dart';
+import '../api/api_service.dart';
+>>>>>>> Stashed changes
 import 'beranda_screen.dart';
 import '../api/api_service.dart'; // Import ApiService
 
@@ -83,6 +88,10 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
     {'id': 13, 'name': 'Wijen'},
     {'id': 14, 'name': 'Bawang Putih'},
     {'id': 15, 'name': 'Seledri'},
+<<<<<<< Updated upstream
+=======
+    {'id': 0,'name': 'Tidak Ada'},
+>>>>>>> Stashed changes
   ];
 
   List<int> _selectedInterests = [];
@@ -100,10 +109,31 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
 
   void _toggleItem(int itemId, List<int> selectedList) {
     setState(() {
+<<<<<<< Updated upstream
       if (selectedList.contains(itemId)) {
         selectedList.remove(itemId);
       } else if (selectedList.length < 3) {
         selectedList.add(itemId);
+=======
+      if (itemId == 99) {
+        // Jika "Tidak Ada" dipilih, hapus semua alergi lain
+        if (selectedList.contains(99)) {
+          selectedList.clear();
+        } else {
+          selectedList.clear();
+          selectedList.add(99);
+        }
+      } else {
+        // Jika alergi lain dipilih, hapus "Tidak Ada" jika ada
+        if (selectedList.contains(99)) {
+          selectedList.remove(99);
+        }
+        if (selectedList.contains(itemId)) {
+          selectedList.remove(itemId);
+        } else if (selectedList.length < 3) {
+          selectedList.add(itemId);
+        }
+>>>>>>> Stashed changes
       }
     });
   }
@@ -128,11 +158,26 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
         return;
       }
 
+<<<<<<< Updated upstream
+=======
+      if (_currentPage == 3 && _selectedAllergies.isEmpty) {
+        // Show error dialog or snackbar
+        print("Pilih minimal 1 pantangan atau alergi");
+        return;
+      }
+
+      List<int> allergiesToSend = _selectedAllergies.contains(0) ? [0] : _selectedAllergies;
+
+>>>>>>> Stashed changes
       await _apiService.savePersonalizationData(
         interests: _selectedInterests,
         favorites: _selectedFavorites,
         diseases: _selectedDiseases,
+<<<<<<< Updated upstream
         allergies: _selectedAllergies,
+=======
+        allergies: allergiesToSend,
+>>>>>>> Stashed changes
       );
     } catch (e) {
       print("Error saving personalization data: $e");
@@ -153,7 +198,16 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
                 controller: _pageController,
                 onPageChanged: (int page) {
                   setState(() {
+<<<<<<< Updated upstream
                     _currentPage = page;
+=======
+                    if (page == 4 || (page == 3 && _selectedAllergies.isNotEmpty)) {
+                      _currentPage = page;
+                    } else if (page == 3 && _selectedAllergies.isEmpty) {
+                      // Show error dialog or snackbar
+                      print("Pilih minimal 1 pantangan atau alergi");
+                    }
+>>>>>>> Stashed changes
                   });
                 },
                 itemCount: 5,
@@ -214,6 +268,15 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
                   return;
                 }
 
+<<<<<<< Updated upstream
+=======
+                if (_currentPage == 3 && _selectedAllergies.isEmpty) {
+                  // Show error dialog or snackbar
+                  print("Pilih minimal 1 pantangan atau alergi");
+                  return;
+                }
+
+>>>>>>> Stashed changes
                 await _savePersonalizationData();
                 _pageController.nextPage(
                   duration: Duration(milliseconds: 300),
@@ -289,7 +352,11 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
           ),
           SizedBox(height: 20),
           SvgPicture.asset(
+<<<<<<< Updated upstream
             'assets/personalization.svg',
+=======
+            AppVectors.iconPersonalization,
+>>>>>>> Stashed changes
           ),
         ],
       ),

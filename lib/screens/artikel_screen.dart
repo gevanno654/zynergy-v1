@@ -107,22 +107,35 @@ class ArtikelScreen extends StatelessWidget {
                       _buildArticleCard(
                         imagePath: 'assets/images/thumbartikel1.png',
                         title: '5 Tips Sehat Ala Gen Z',
+<<<<<<< Updated upstream
                         onPressed: () {
+=======
+                        onPressed: (){
+>>>>>>> Stashed changes
                           // Navigasi ke halaman artikel selengkapnya
                         },
                       ),
                       _buildArticleCard(
                         imagePath: 'assets/images/thumbartikel2.png',
+<<<<<<< Updated upstream
                         title:
                             '5 Cara Meredakan Gangguan Kecemasan dengan Cepat',
                         onPressed: () {
+=======
+                        title: '5 Cara Meredakan Gangguan Kecemasan dengan Cepat',
+                        onPressed: (){
+>>>>>>> Stashed changes
                           // Navigasi ke halaman artikel selengkapnya
                         },
                       ),
                       _buildArticleCard(
                         imagePath: 'assets/images/thumbartikel3.png',
                         title: 'Nutrisi dan Manfaat Kesehatan Wortel',
+<<<<<<< Updated upstream
                         onPressed: () {
+=======
+                        onPressed: (){
+>>>>>>> Stashed changes
                           // Navigasi ke halaman artikel selengkapnya
                         },
                       ),
@@ -134,6 +147,100 @@ class ArtikelScreen extends StatelessWidget {
           ),
         ),
       ),
+<<<<<<< Updated upstream
+=======
+    );
+  }
+
+  Widget _buildArticleCard({
+    required String imagePath,
+    required String title,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        elevation: (0.0),
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: AppColors.lightGrey),
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Container(
+          height: 130,
+          child: Row(
+            children: [
+              Container(
+                width: 110,
+                height: 110,
+                margin: EdgeInsets.only(left: 10.0, right: 4.0, bottom: 8.0, top: 8.0),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(imagePath),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 0,
+                        blurRadius: 4,
+                        offset: Offset(0, 0)
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: SizedBox(
+                          width: 130,
+                          height: 34,
+                          child: ElevatedButton(
+                            onPressed: onPressed,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary, // Menggunakan AppColors.primary
+                              foregroundColor: Colors.white,
+                              elevation: (0.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: Text(
+                              ButtonBerandaText.selengkapnya,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+>>>>>>> Stashed changes
     );
   }
 

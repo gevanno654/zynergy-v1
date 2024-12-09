@@ -7,13 +7,16 @@ import 'package:zynergy/screens/pengaturan_screen.dart';
 import 'login_screen.dart';
 import 'informasi_pribadi_screen.dart';
 import '../api/api_service.dart';
+import 'package:google_sign_in/google_sign_in.dart'; // Tambahkan ini
 
 class ProfilScreen extends StatelessWidget {
   final ApiService _apiService = ApiService(); // Buat instance ApiService
+  final GoogleSignIn _googleSignIn = GoogleSignIn(); // Tambahkan ini
 
   Future<void> _logout(BuildContext context) async {
     try {
       await _apiService.logout(); // Panggil metode logout dari ApiService
+      await _googleSignIn.signOut(); // Tambahkan ini untuk signOut dari Google
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -57,7 +60,11 @@ class ProfilScreen extends StatelessWidget {
                         child: SvgPicture.asset(
                           AppVectors.iconUser, // Replace with your SVG path
                           height:
+<<<<<<< Updated upstream
                               100, // Scale the SVG to fit within the CircleAvatar
+=======
+                          100, // Scale the SVG to fit within the CircleAvatar
+>>>>>>> Stashed changes
                           width: 100,
                           fit: BoxFit
                               .cover, // Ensures the SVG scales proportionally
@@ -120,7 +127,11 @@ class ProfilScreen extends StatelessWidget {
                                   const SizedBox(width: 12.0),
                                   const Column(
                                     crossAxisAlignment:
+<<<<<<< Updated upstream
                                         CrossAxisAlignment.start,
+=======
+                                    CrossAxisAlignment.start,
+>>>>>>> Stashed changes
                                     children: [
                                       Text(
                                         "Dela April Liana",
@@ -175,7 +186,11 @@ class ProfilScreen extends StatelessWidget {
                                             PengaturanScreen()));
                               },
                               leading:
+<<<<<<< Updated upstream
                                   SvgPicture.asset(AppVectors.iconStopWatch),
+=======
+                              SvgPicture.asset(AppVectors.iconStopWatch),
+>>>>>>> Stashed changes
                               title: const Text(
                                 'Pengingat',
                                 style: TextStyle(
@@ -204,7 +219,11 @@ class ProfilScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
+<<<<<<< Updated upstream
                                             const AlarmScreen()));
+=======
+                                        const AlarmScreen()));
+>>>>>>> Stashed changes
                               },
                               leading: SvgPicture.asset(AppVectors.iconAlarm),
                               title: const Text(
@@ -296,6 +315,24 @@ class ProfilScreen extends StatelessWidget {
             ],
           ),
         ),
+<<<<<<< Updated upstream
+=======
+      ),
+    );
+  }
+
+  Widget _socialButton(String icon) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.lightGrey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: SvgPicture.asset(
+        icon,
+        width: 24,
+        height: 24,
+>>>>>>> Stashed changes
       ),
     );
   }

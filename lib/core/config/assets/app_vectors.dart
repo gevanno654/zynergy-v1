@@ -37,4 +37,8 @@ class AppVectors {
   static const String iconOlahraga = '${basepath}ic_olahraga$format';
   static const String iconCheckup = '${basepath}ic_cek_kesehatan$format';
   static const String iconNotification = '${basepath}ic_notification$format';
+<<<<<<< Updated upstream
+=======
+  static const String iconPersonalization = '${basepath}personalization$format';
+>>>>>>> Stashed changes
 }

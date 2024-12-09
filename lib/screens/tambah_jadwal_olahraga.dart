@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:shared_preferences/shared_preferences.dart';
+import '../api/api_service.dart';
+import '../api/notification_service.dart';
+import '../api/api_response.dart'; // Impor kelas ApiResponse
+>>>>>>> Stashed changes
 import '../core/config/strings/app_text.dart';
 import '../core/config/assets/app_vectors.dart';
 import '../core/config/theme/app_colors.dart'; // Impor app_colors.dart
@@ -14,13 +21,22 @@ class _TambahJadwalOlahragaScreenState extends State<TambahJadwalOlahragaScreen>
   int _selectedHour = 0;
   int _selectedMinute = 0;
   String _selectedFrequency = 'Sekali';
+<<<<<<< Updated upstream
   bool _isVibrationEnabled = false;
   bool _isDeleteAfterRing = false;
+=======
+>>>>>>> Stashed changes
   TextEditingController _namaJadwalController = TextEditingController();
 
   List<int> _hours = List.generate(24, (index) => index);
   List<int> _minutes = List.generate(60, (index) => index);
 
+<<<<<<< Updated upstream
+=======
+  final ApiService _apiService = ApiService();
+  final NotificationService _notificationService = NotificationService();
+
+>>>>>>> Stashed changes
   void _showTimePicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -117,6 +133,63 @@ class _TambahJadwalOlahragaScreenState extends State<TambahJadwalOlahragaScreen>
     );
   }
 
+<<<<<<< Updated upstream
+=======
+  Future<void> _saveLightActivityReminder() async {
+    int frequencyValue = _selectedFrequency == 'Sekali' ? 0 : 1;
+
+    final lightActivityReminder = {
+      'activity_name': _namaJadwalController.text,
+      'activity_hour': _selectedHour,
+      'activity_minute': _selectedMinute,
+      'activity_frequency': frequencyValue,
+      'toggle_value': 1, // Set toggle_value to 1 by default
+    };
+
+    try {
+      // Menyimpan pengingat ke database
+      final ApiResponse response = await _apiService.saveLightActivityReminder(lightActivityReminder);
+
+      if (response.success) {
+        // Menentukan waktu notifikasi
+        DateTime scheduledDate = DateTime.now().add(Duration(seconds: 1)); // Set the default time to 1 second later
+        scheduledDate = scheduledDate.copyWith(hour: _selectedHour, minute: _selectedMinute, second: 0);
+
+        // Menjadwalkan notifikasi berdasarkan frekuensi
+        await NotificationService().scheduleNotification(
+          response.data['id'], // Gunakan id sebagai notification_id
+          'Pengingat Olahraga',
+          'Saatnya olahraga: ${_namaJadwalController.text}',
+          scheduledDate,
+          _selectedFrequency,  // Meneruskan nilai frekuensi
+        );
+
+        // Save notification_id to SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('notification_id_${response.data['id']}', response.data['id']); // Simpan id sebagai notification_id
+
+        // Kirim data kembali ke pengingat_olahraga.dart
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error saving light activity reminder: ${response.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print("Error saving light activity reminder: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving light activity reminder: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+>>>>>>> Stashed changes
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,6 +317,7 @@ class _TambahJadwalOlahragaScreenState extends State<TambahJadwalOlahragaScreen>
                                 onTap: () => _showFrequencyModal(context),
                               ),
                             ),
+<<<<<<< Updated upstream
                             SizedBox(
                               height: 60,
                               child: ListTile(
@@ -302,6 +376,8 @@ class _TambahJadwalOlahragaScreenState extends State<TambahJadwalOlahragaScreen>
                                 ),
                               ),
                             ),
+=======
+>>>>>>> Stashed changes
                           ],
                         ),
                       ),
@@ -315,10 +391,14 @@ class _TambahJadwalOlahragaScreenState extends State<TambahJadwalOlahragaScreen>
               width: double.infinity,
               height: 40,
               child: ElevatedButton(
+<<<<<<< Updated upstream
                 onPressed: () {
                   // Handle save logic here
                   Navigator.of(context).pop();
                 },
+=======
+                onPressed: _saveLightActivityReminder,
+>>>>>>> Stashed changes
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary, // Menggunakan AppColors.primary
                   shape: RoundedRectangleBorder(

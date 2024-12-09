@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 import 'package:flutter/cupertino.dart'; // Tambahkan ini untuk menggunakan CupertinoSwitch
 import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan ini untuk menggunakan SVG
 import 'pengingat_screen.dart';
@@ -14,6 +15,26 @@ import '../core/config/theme/app_colors.dart'; // Impor app_colors.dart
 import '../core/config/strings/app_text.dart'; // Impor app_text.dart
 import '../core/config/assets/app_vectors.dart'; // Impor app_vectors.dart
 import '../core/config/assets/app_images.dart'; // Impor app_images.dart
+=======
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import '../core/config/theme/app_colors.dart';
+import '../core/config/strings/app_text.dart';
+import '../core/config/assets/app_vectors.dart';
+import '../api/api_service.dart';
+import 'pengingat_screen.dart';
+import 'artikel_screen.dart';
+import 'profil_screen.dart';
+import 'tambah_jadwal_makan.dart';
+import 'tambah_jadwal_tidur.dart';
+import 'tambah_jadwal_cek_kesehatan.dart';
+import 'tambah_jadwal_olahraga.dart';
+import '../api/notification_service.dart'; // Import NotificationService
+import 'personalization_screen.dart'; // Import personalization_screen.dart
+import 'detail_article_screen.dart'; // Import detail_article_screen.dart
+>>>>>>> Stashed changes
 
 class BerandaScreen extends StatefulWidget {
   @override
@@ -23,6 +44,9 @@ class BerandaScreen extends StatefulWidget {
 class _BerandaScreenState extends State<BerandaScreen> {
   int _currentIndex = 0;
   final _apiService = ApiService();
+  List<Map<String, dynamic>> suggestMenus = [];
+  List<Map<String, dynamic>> suggestAvoids = [];
+  List<Map<String, dynamic>> suggestedArticles = [];
 
   final List<Widget> _screens = [
     BerandaContentScreen(),
@@ -38,16 +62,62 @@ class _BerandaScreenState extends State<BerandaScreen> {
     'Profil',
   ];
 
-  Future<void> _logout() async {
+  final NotificationService _notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSuggestions();
+    _loadArticles(); // Tambahkan ini
+    _initializeNotifications();
+    _checkPersonalizationData(); // Tambahkan ini untuk mengecek data personalisasi
+  }
+
+  void startBackgroundService() {
+    AndroidAlarmManager.periodic(
+      const Duration(hours: 1), // Ulangi setiap 1 jam
+      0, // ID alarm
+          () async {
+        _loadSuggestions();
+      },
+    );
+  }
+
+  // Fungsi untuk mengambil data dari API
+  Future<void> _loadSuggestions() async {
     try {
-      await _apiService.logout(); // Panggil metode logout dari ApiService
+      suggestMenus = await _apiService.getSuggestMenus();
+      suggestAvoids = await _apiService.getSuggestAvoids();
+      setState(() {
+        _notificationService.updateNotificationContent(suggestMenus, suggestAvoids);
+      });
+    } catch (e) {
+      print("Error fetching suggestions: $e");
+    }
+  }
+
+  // Fungsi untuk mengambil artikel dari API
+  Future<void> _loadArticles() async {
+    try {
+      suggestedArticles = await _apiService.getSuggestedArticles();
+      setState(() {});
+    } catch (e) {
+      print("Error fetching articles: $e");
+    }
+  }
+
+  // Inisialisasi notifikasi lokal
+  void _initializeNotifications() async {
+    await _notificationService.initializeNotifications();
+  }
+
+  // Fungsi untuk mengecek data personalisasi
+  Future<void> _checkPersonalizationData() async {
+    bool hasPersonalizationData = await _apiService.hasPersonalizationData();
+    if (!hasPersonalizationData) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to logout: $e')),
+        MaterialPageRoute(builder: (context) => PersonalizationScreen()),
       );
     }
   }
@@ -56,7 +126,7 @@ class _BerandaScreenState extends State<BerandaScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return false; // Mencegah pengguna kembali ke halaman sebelumnya
+        return false;
       },
       child: Scaffold(
         body: IndexedStack(
@@ -88,12 +158,21 @@ class _BerandaScreenState extends State<BerandaScreen> {
               label: 'Profil',
             ),
           ],
+<<<<<<< Updated upstream
           selectedItemColor: AppColors.primary, // Menggunakan AppColors.primary
           unselectedItemColor: Colors.grey, // Warna font yang tidak dipilih
           selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold), // Gaya font yang dipilih
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal), // Gaya font yang tidak dipilih
           showSelectedLabels: true, // Menampilkan label yang dipilih
           showUnselectedLabels: true, // Menampilkan label yang tidak dipilih
+=======
+          selectedItemColor: AppColors.primary,
+          unselectedItemColor: Colors.grey,
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+>>>>>>> Stashed changes
         ),
       ),
     );
@@ -106,6 +185,7 @@ class BerandaContentScreen extends StatefulWidget {
 }
 
 class _BerandaContentScreenState extends State<BerandaContentScreen> {
+<<<<<<< Updated upstream
   final String userName = "John Doe";
   bool _isPengingatMakanEnabled = true;
   bool _isPengingatTidurEnabled = true;
@@ -135,11 +215,357 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
         );
       },
     );
+=======
+  final _apiService = ApiService();
+  final String userName = "John Doe";
+  bool _isPengingatMakanEnabled = true;
+  bool _isPengingatTidurEnabled = true;
+  bool _isPengingatCekKesehatanEnabled = true;
+  bool _isPengingatOlahragaEnabled = true;
+  List<Map<String, dynamic>> suggestedArticles = [];
+  List<Map<String, dynamic>> _sleepReminders = [];
+  List<Map<String, dynamic>> _specialSchedules = [];
+  List<Map<String, dynamic>> _healthCheckupReminders = [];
+  List<dynamic> _lightActivityReminders = [];
+  bool _isSarapanEnabled = true;
+  bool _isMakanSiangEnabled = true;
+  bool _isMakanMalamEnabled = true;
+  bool _isCamilanEnabled = true;
+  bool _isJoggingEnabled = true;
+  bool _isPereganganEnabled = true;
+  bool _isGymEnabled = true;
+
+  final Map<String, int> _notificationIds = {
+    'Jogging': 200,
+    'Peregangan': 201,
+    'Gym': 202,
+  };
+
+  final NotificationService _notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToggleValues();
+    _loadArticles();
+  }
+
+  Future<void> _loadToggleValues() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isPengingatMakanEnabled = prefs.getBool('isPengingatMakanEnabled') ?? true;
+      _isPengingatTidurEnabled = prefs.getBool('isPengingatTidurEnabled') ?? true;
+      _isPengingatOlahragaEnabled = prefs.getBool('isPengingatOlahragaEnabled') ?? true;
+      _isPengingatCekKesehatanEnabled = prefs.getBool('isPengingatCekKesehatanEnabled') ?? true;
+    });
+  }
+
+  Future<void> _saveToggleValue(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, value);
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchSuggestMenus() async {
+    try {
+      return await _apiService.getSuggestMenus();
+    } catch (e) {
+      print("Error fetching suggest menus: $e");
+      return []; // Kembalikan daftar kosong jika terjadi error
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchSuggestAvoids() async {
+    try {
+      return await _apiService.getSuggestAvoids();
+    } catch (e) {
+      print("Error fetching suggest avoids: $e");
+      return []; // Kembalikan daftar kosong jika terjadi error
+    }
+  }
+
+  // Menyalakan semua notifikasi Pengingat Makan
+  void _enableAllMealSchedules() async {
+    // Aktifkan notifikasi pada semua jadwal bawaan yang saat ini enabled
+    if (_isSarapanEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+    }
+    if (_isMakanSiangEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+    }
+    if (_isMakanMalamEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+    }
+    if (_isCamilanEnabled) {
+      _notificationService.updateNotificationContent(await _fetchSuggestMenus(), await _fetchSuggestAvoids());
+    }
+
+    // Aktifkan notifikasi untuk jadwal khusus yang enabled
+    for (final schedule in _specialSchedules) {
+      if (schedule['toggle_value'] == 1 && schedule['meal_frequency'] == 1) { // Periksa frekuensi harian
+        final scheduledDate = DateTime.now().copyWith(
+          hour: schedule['meal_hour'],
+          minute: schedule['meal_minute'],
+          second: 0,
+        );
+        await _notificationService.scheduleNotification(
+          schedule['id'],
+          'Pengingat Makan Khusus',
+          'Saatnya makan: ${schedule['meal_name']}',
+          scheduledDate,
+          'Harian', // Hanya jadwalkan ulang untuk harian
+        );
+      }
+    }
+
+    // Panggil fungsi untuk memperbarui konten notifikasi dinamis
+    List<Map<String, dynamic>> suggestMenus = await _apiService.getSuggestMenus();
+    List<Map<String, dynamic>> suggestAvoids = await _apiService.getSuggestAvoids();
+    _notificationService.updateNotificationContent(suggestMenus, suggestAvoids);
+  }
+
+  // Mematikan semua notifikasi Pengingat Makan
+  void _disableAllMealNotifications() async {
+    // Nonaktifkan semua notifikasi pada jadwal bawaan
+    _notificationService.cancelNotification(1); // Sarapan
+    _notificationService.cancelNotification(2); // Makan Siang
+    _notificationService.cancelNotification(3); // Makan Malam
+    _notificationService.cancelNotification(4); // Camilan
+
+    // Nonaktifkan semua notifikasi pada jadwal khusus
+    for (final schedule in _specialSchedules) {
+      await _notificationService.cancelNotification(schedule['id']);
+    }
+  }
+
+  // Menyalakan semua notifikasi Pengingat Tidur
+  void _enableAllSleepReminders() {
+    if (_isPengingatTidurEnabled) {
+      // Aktifkan notifikasi jadwal tidur bawaan
+      _notificationService.rescheduleNotificationIfNeeded(
+        100,
+        'Pengingat Tidur',
+        'Ayo tidur, jangan forsir dirimu!',
+        DateTime(0, 0, 0, 22, 0),
+      );
+
+      _notificationService.rescheduleNotificationIfNeeded(
+        101,
+        'Pengingat Bangun',
+        'BANGON BANGON SUDAH PAGI!',
+        DateTime(0, 0, 0, 6, 0),
+      );
+
+      // Aktifkan jadwal tambahan
+      for (final reminder in _sleepReminders) {
+        if (reminder['toggle_state'] == true) {
+          final sleepTime = DateTime.now().copyWith(
+            hour: reminder['sleep_hour'],
+            minute: reminder['sleep_minute'],
+            second: 0,
+          );
+          final wakeTime = DateTime.now().copyWith(
+            hour: reminder['wake_hour'],
+            minute: reminder['wake_minute'],
+            second: 0,
+          );
+
+          _notificationService.scheduleNotification(
+            reminder['id'],
+            'Pengingat Tidur',
+            'Ayo tidur, jangan forsir dirimu!',
+            sleepTime,
+            reminder['sleep_frequency'] == 1 ? 'Harian' : 'Sekali',
+          );
+
+          _notificationService.scheduleNotificationWithCustomSound(
+            reminder['id'] + 1,
+            'Pengingat Bangun',
+            'BANGON BANGON SUDAH PAGI!',
+            wakeTime,
+            reminder['sleep_frequency'] == 1 ? 'Harian' : 'Sekali',
+          );
+        }
+      }
+    }
+  }
+
+  // Mematikan semua notifikasi Pengingat Tidur
+  void _disableAllSleepReminders() {
+    // Nonaktifkan semua notifikasi pada jadwal bawaan
+    try {
+      _notificationService.cancelNotification(100); // Notifikasi tidur bawaan
+      _notificationService.cancelNotification(101); // Notifikasi bangun bawaan
+
+      // Nonaktifkan semua notifikasi pada jadwal khusus
+      for (final reminder in _sleepReminders) {
+        final sleepId = reminder['id'];
+        final wakeId = sleepId + 1;
+
+        _notificationService.cancelNotification(sleepId);
+        _notificationService.cancelNotification(wakeId);
+      }
+      print("Semua notifikasi pengingat tidur berhasil dibatalkan.");
+    } catch (e) {
+      print("Error membatalkan semua pengingat tidur: $e");
+    }
+  }
+
+  // Toggle Switch Pengingat Olahraga
+  void _toggleNotification(String activityName, bool isEnabled, DateTime scheduledDate, String frequency, String title, String body) {
+    final notificationId = _notificationIds[activityName];
+    if (notificationId != null) {
+      if (isEnabled) {
+        _notificationService.scheduleNotification(
+          notificationId,
+          title,
+          body,
+          scheduledDate,
+          frequency,
+        );
+      } else {
+        _notificationService.cancelNotification(notificationId);
+      }
+    }
+  }
+
+  void _enableAllExerciseReminders() {
+    // Reschedule notifications for default schedules
+    _toggleNotification(
+        'Jogging', _isJoggingEnabled,
+        DateTime.now().add(Duration(hours: 5)),
+        'Harian',
+        'Jogging',
+        'Ingatlah untuk jogging pagi!'
+    );
+    _toggleNotification(
+        'Peregangan', _isPereganganEnabled,
+        DateTime.now().add(Duration(hours: 11)),
+        'Harian',
+        'Peregangan',
+        'Ingatlah untuk peregangan otot!'
+    );
+    _toggleNotification(
+        'Gym', _isGymEnabled,
+        DateTime.now().add(Duration(hours: 19)),
+        'Harian',
+        'Gym',
+        'Ingatlah untuk gym!'
+    );
+
+    // Reschedule notifications for custom schedules
+    for (var reminder in _lightActivityReminders) {
+      final scheduledDate = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        reminder['activity_hour'],
+        reminder['activity_minute'],
+      );
+      _toggleNotification(reminder['activity_name'],
+          reminder['toggle_value'] == 1, scheduledDate,
+          reminder['activity_frequency'] == 1 ? 'Harian' : 'Sekali',
+          reminder['activity_name'], 'Ingatlah untuk ${reminder['activity_name'].toLowerCase()}!');
+    }
+  }
+
+  // Mematikan semua notifikasi Pengingat Olahraga
+  void _disableAllExerciseReminders() {
+    // Cancel notifications for default schedules
+    _notificationService.cancelNotification(_notificationIds['Jogging']!);
+    _notificationService.cancelNotification(_notificationIds['Peregangan']!);
+    _notificationService.cancelNotification(_notificationIds['Gym']!);
+
+    // Cancel notifications for custom schedules
+    for (var reminder in _lightActivityReminders) {
+      final notificationId = _notificationIds[reminder['activity_name']];
+      if (notificationId != null) {
+        _notificationService.cancelNotification(notificationId);
+      }
+    }
+  }
+
+  Future<void> _enableAllCheckupReminders() async {
+    if (_healthCheckupReminders == null || _healthCheckupReminders.isEmpty) {
+      return; // Pastikan daftar tidak kosong atau null
+    }
+
+    final now = DateTime.now();
+    for (var reminder in _healthCheckupReminders) {
+      try {
+        // Validasi bahwa reminder memiliki kunci yang dibutuhkan
+        if (reminder.containsKey('checkup_year') &&
+            reminder.containsKey('checkup_month') &&
+            reminder.containsKey('checkup_date') &&
+            reminder.containsKey('checkup_hour') &&
+            reminder.containsKey('checkup_minute')) {
+          final date = DateTime(
+            reminder['checkup_year'],
+            reminder['checkup_month'],
+            reminder['checkup_date'],
+            reminder['checkup_hour'],
+            reminder['checkup_minute'],
+          );
+          if (date.isAfter(now)) {
+            await _notificationService.scheduleHealthCheckupNotification(
+              reminder['id'],
+              reminder['checkup_name'],
+              reminder['checkup_note'],
+              date,
+            );
+          }
+        }
+      } catch (e) {
+        print('Error scheduling reminder: $e');
+      }
+    }
+  }
+
+  Future<void> _disableAllCheckupReminders() async {
+    try {
+      final notificationService = NotificationService();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? checkupReminderIds = prefs.getStringList('checkupReminderIds');
+
+      if (checkupReminderIds != null) {
+        for (String id in checkupReminderIds) {
+          try {
+            await notificationService.cancelNotification(int.parse(id));
+          } catch (e) {
+            print('Error cancelling notification with ID $id: $e');
+          }
+        }
+        await prefs.remove('checkupReminderIds');
+      }
+    } catch (e) {
+      print('Error disabling all checkup reminders: $e');
+    }
+  }
+
+  // Fungsi untuk mendapatkan ID notifikasi cek kesehatan
+  List<int> _getCheckupReminderIds() {
+    // Gantikan ini dengan logika Anda untuk mendapatkan daftar ID notifikasi
+    return [/* Daftar ID notifikasi cek kesehatan */];
+  }
+
+  // Fungsi untuk mengambil artikel dari API
+  Future<void> _loadArticles() async {
+    try {
+      suggestedArticles = await ApiService().getSuggestedArticles();
+      print("Articles fetched successfully");
+      setState(() {});
+    } catch (e) {
+      print("Error fetching articles: $e");
+    }
+>>>>>>> Stashed changes
   }
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     String displayName = userName.split(' ')[0]; // Ambil kata depan
+=======
+    String displayName = userName.split(' ')[0];
+>>>>>>> Stashed changes
 
     return Scaffold(
       body: Stack(
@@ -180,6 +606,7 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                       "Hai, $displayName",
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
+<<<<<<< Updated upstream
                     IconButton(
                       icon: SvgPicture.asset(AppVectors.iconNotification), // Menggunakan AppVectors.iconNotification
                       onPressed: () => _showModal(context),
@@ -284,6 +711,15 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                   ),
                 ],
               ),
+=======
+                  ],
+                ),
+              ),
+              SizedBox(height: 30.0),
+              _buildReminderCard(context),
+              SizedBox(height: 16.0),
+              _buildArticleSection(context), // Tambahkan ini
+>>>>>>> Stashed changes
             ],
           ),
         ],
@@ -291,6 +727,7 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
     );
   }
 
+<<<<<<< Updated upstream
   Widget _buildCard({
     required IconData icon,
     required String title,
@@ -339,14 +776,23 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
     );
   }
 
+=======
+>>>>>>> Stashed changes
   Widget _buildReminderCard(BuildContext context) {
     return Column(
       children: [
         Card(
+<<<<<<< Updated upstream
           elevation: (0.0),
           color: Colors.white,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: AppColors.lightGrey), // Menggunakan AppColors.lightGrey
+=======
+          elevation: 0.0,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: AppColors.lightGrey),
+>>>>>>> Stashed changes
             borderRadius: BorderRadius.circular(12.0),
           ),
           child: Padding(
@@ -354,7 +800,11 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
             child: Column(
               children: [
                 Card(
+<<<<<<< Updated upstream
                   color: AppColors.primary, // Menggunakan AppColors.primary
+=======
+                  color: AppColors.primary,
+>>>>>>> Stashed changes
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(99.0),
                   ),
@@ -366,13 +816,21 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                           width: 24,
                           height: 24,
                           child: SvgPicture.asset(
+<<<<<<< Updated upstream
                             AppVectors.iconMakan, // Menggunakan AppVectors.iconMakan
+=======
+                            AppVectors.iconMakan,
+>>>>>>> Stashed changes
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 12.0),
                           child: Text(
+<<<<<<< Updated upstream
                             'Pengingat Makan', // Menggunakan BerandaText.pengingatMakan
+=======
+                            'Pengingat Makan',
+>>>>>>> Stashed changes
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -385,12 +843,30 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                           scale: 0.9,
                           child: CupertinoSwitch(
                             value: _isPengingatMakanEnabled,
+<<<<<<< Updated upstream
                             onChanged: (value) {
                               setState(() {
                                 _isPengingatMakanEnabled = value;
                               });
                             },
                             activeColor: AppColors.lightGrey, // Menggunakan AppColors.lightGrey
+=======
+                            onChanged: (value) async {
+                              setState(() {
+                                _isPengingatMakanEnabled = value;
+                                _saveToggleValue('isPengingatMakanEnabled', value);
+                              });
+
+                              if (value) {
+                                // Aktifkan semua notifikasi jadwal makan
+                                _enableAllMealSchedules();
+                              } else {
+                                // Nonaktifkan semua notifikasi jadwal makan
+                                _disableAllMealNotifications();
+                              }
+                            },
+                            activeColor: AppColors.lightGrey,
+>>>>>>> Stashed changes
                           ),
                         ),
                       ],
@@ -409,11 +885,19 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
+<<<<<<< Updated upstream
                       foregroundColor: AppColors.primary, // Menggunakan AppColors.primary
                       elevation: (0.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                         side: BorderSide(color: AppColors.primary), // Menggunakan AppColors.primary
+=======
+                      foregroundColor: AppColors.primary,
+                      elevation: 0.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        side: BorderSide(color: AppColors.primary),
+>>>>>>> Stashed changes
                       ),
                     ),
                     child: Row(
@@ -477,10 +961,26 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                           scale: 0.9,
                           child: CupertinoSwitch(
                             value: _isPengingatTidurEnabled,
+<<<<<<< Updated upstream
                             onChanged: (value) {
                               setState(() {
                                 _isPengingatTidurEnabled = value;
                               });
+=======
+                            onChanged: (value) async {
+                              setState(() {
+                                _isPengingatTidurEnabled = value;
+                                _saveToggleValue('isPengingatTidurEnabled', value);
+                              });
+
+                              if (value) {
+                                // Aktifkan semua notifikasi jadwal tidur
+                                _enableAllSleepReminders();
+                              } else {
+                                // Nonaktifkan semua notifikasi jadwal tidur
+                                _disableAllSleepReminders();
+                              }
+>>>>>>> Stashed changes
                             },
                             activeColor: AppColors.lightGrey,
                           ),
@@ -490,6 +990,7 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                   ),
                 ),
                 SizedBox(height: 8.0),
+<<<<<<< Updated upstream
                 SizedBox(
                   height: 60,
                   child: Card(
@@ -577,6 +1078,8 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                   ),
                 ),
                 SizedBox(height: 8.0),
+=======
+>>>>>>> Stashed changes
                 Padding(
                   padding: const EdgeInsets.only(left: 6.0, right: 6.0),
                   child: ElevatedButton(
@@ -656,10 +1159,25 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                           scale: 0.9,
                           child: CupertinoSwitch(
                             value: _isPengingatOlahragaEnabled,
+<<<<<<< Updated upstream
                             onChanged: (value) {
                               setState(() {
                                 _isPengingatOlahragaEnabled = value;
                               });
+=======
+                            onChanged: (value) async {
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              setState(() {
+                                _isPengingatOlahragaEnabled = value;
+                                _saveToggleValue('isPengingatOlahragaEnabled', value);
+                              });
+
+                              if (!value) {
+                                _disableAllExerciseReminders();
+                              } else {
+                                _enableAllExerciseReminders();
+                              }
+>>>>>>> Stashed changes
                             },
                             activeColor: AppColors.lightGrey, // Menggunakan AppColors.lightGrey
                           ),
@@ -704,7 +1222,11 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
             ),
           ),
         ),
+<<<<<<< Updated upstream
         SizedBox(height: 16.0),
+=======
+        SizedBox(height: 16),
+>>>>>>> Stashed changes
         Card(
           elevation: (0.0),
           color: Colors.white,
@@ -748,10 +1270,25 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
                           scale: 0.9,
                           child: CupertinoSwitch(
                             value: _isPengingatCekKesehatanEnabled,
+<<<<<<< Updated upstream
                             onChanged: (value) {
                               setState(() {
                                 _isPengingatCekKesehatanEnabled = value;
                               });
+=======
+                            onChanged: (value) async {
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              setState(() {
+                                _isPengingatCekKesehatanEnabled = value;
+                                _saveToggleValue('isPengingatCekKesehatanEnabled', value);
+                              });
+
+                              if (!value) {
+                                _disableAllCheckupReminders();
+                              } else {
+                                _enableAllCheckupReminders();
+                              }
+>>>>>>> Stashed changes
                             },
                             activeColor: AppColors.lightGrey,
                           ),
@@ -800,6 +1337,7 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
     );
   }
 
+<<<<<<< Updated upstream
   Widget _buildArticleCard({
     required String imagePath,
     required String title,
@@ -888,6 +1426,87 @@ class _BerandaContentScreenState extends State<BerandaContentScreen> {
           ),
         ),
       ),
+=======
+  Widget _buildArticleSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            'Artikel Rekomendasi',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          height: 200.0,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: suggestedArticles.length,
+            itemBuilder: (context, index) {
+              final article = suggestedArticles[index];
+              return Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailArticleScreen(article: article),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+                          child: Image.network(
+                            article['image_url'], // Gunakan image_url yang baru
+                            height: 120.0,
+                            width: 150.0,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            article['title'],
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            'Selengkapnya',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+>>>>>>> Stashed changes
     );
   }
 }

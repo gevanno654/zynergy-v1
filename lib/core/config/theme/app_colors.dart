@@ -9,4 +9,8 @@ class AppColors {
   static const black = Color(0xff000000);
   static const lightGrey = Color(0xFFDFDFDF);
   static const danger = Color(0xFFC21F1F);
+<<<<<<< Updated upstream
+=======
+  static const grey = Colors.grey;
+>>>>>>> Stashed changes
 }

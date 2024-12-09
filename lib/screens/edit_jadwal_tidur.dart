@@ -5,6 +5,10 @@ import '../core/config/strings/app_text.dart';
 import '../core/config/theme/app_colors.dart';
 import '../core/config/assets/app_vectors.dart';
 import '../api/api_service.dart';
+<<<<<<< Updated upstream
+=======
+import '../api/notification_service.dart';
+>>>>>>> Stashed changes
 
 class EditJadwalTidurScreen extends StatefulWidget {
   final int id;
@@ -14,8 +18,11 @@ class EditJadwalTidurScreen extends StatefulWidget {
   final int wakeHour;
   final int wakeMinute;
   final String sleepFrequency;
+<<<<<<< Updated upstream
   final bool isVibrationEnabled;
   final bool isDeleteAfterRing;
+=======
+>>>>>>> Stashed changes
 
   EditJadwalTidurScreen({
     required this.id,
@@ -25,8 +32,11 @@ class EditJadwalTidurScreen extends StatefulWidget {
     required this.wakeHour,
     required this.wakeMinute,
     required this.sleepFrequency,
+<<<<<<< Updated upstream
     required this.isVibrationEnabled,
     required this.isDeleteAfterRing,
+=======
+>>>>>>> Stashed changes
   });
 
   @override
@@ -39,8 +49,13 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
   late int _selectedWakeHour;
   late int _selectedWakeMinute;
   late String _selectedFrequency;
+<<<<<<< Updated upstream
   late bool _isVibrationEnabled;
   late TextEditingController _namaJadwalController;
+=======
+  late TextEditingController _namaJadwalController;
+  bool _isDurasiTidurTerbaikEnabled = false;
+>>>>>>> Stashed changes
 
   List<int> _hours = List.generate(24, (index) => index);
   List<int> _minutes = List.generate(60, (index) => index);
@@ -53,7 +68,10 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
     _selectedWakeHour = widget.wakeHour;
     _selectedWakeMinute = widget.wakeMinute;
     _selectedFrequency = widget.sleepFrequency;
+<<<<<<< Updated upstream
     _isVibrationEnabled = widget.isVibrationEnabled;
+=======
+>>>>>>> Stashed changes
     _namaJadwalController = TextEditingController(text: widget.sleepName);
   }
 
@@ -72,6 +90,10 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
                     setState(() {
                       if (isSleepTime) {
                         _selectedSleepHour = _hours[index];
+<<<<<<< Updated upstream
+=======
+                        _calculateWakeTime();
+>>>>>>> Stashed changes
                       } else {
                         _selectedWakeHour = _hours[index];
                       }
@@ -95,6 +117,10 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
                     setState(() {
                       if (isSleepTime) {
                         _selectedSleepMinute = _minutes[index];
+<<<<<<< Updated upstream
+=======
+                        _calculateWakeTime();
+>>>>>>> Stashed changes
                       } else {
                         _selectedWakeMinute = _minutes[index];
                       }
@@ -117,6 +143,20 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
     );
   }
 
+<<<<<<< Updated upstream
+=======
+  void _calculateWakeTime() {
+    if (_isDurasiTidurTerbaikEnabled) {
+      DateTime sleepTime = DateTime(0, 0, 0, _selectedSleepHour, _selectedSleepMinute);
+      DateTime wakeTime = sleepTime.add(Duration(hours: 8));
+      setState(() {
+        _selectedWakeHour = wakeTime.hour;
+        _selectedWakeMinute = wakeTime.minute;
+      });
+    }
+  }
+
+>>>>>>> Stashed changes
   void _showFrequencyModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -176,6 +216,72 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
     });
 
     if (response.success) {
+<<<<<<< Updated upstream
+=======
+      // Schedule notification after successfully updating sleep reminder
+      final now = DateTime.now();
+      final sleepHour = _selectedSleepHour;
+      final sleepMinute = _selectedSleepMinute;
+      final wakeHour = _selectedWakeHour;
+      final wakeMinute = _selectedWakeMinute;
+      final sleepFrequency = _selectedFrequency;
+
+      DateTime sleepScheduledDate = DateTime(now.year, now.month, now.day, sleepHour, sleepMinute);
+      DateTime wakeScheduledDate = DateTime(now.year, now.month, now.day, wakeHour, wakeMinute);
+
+      if (sleepScheduledDate.isBefore(now)) {
+        if (sleepFrequency == 'Sekali') {
+          sleepScheduledDate = sleepScheduledDate.add(Duration(days: 1));
+        }
+      }
+
+      if (wakeScheduledDate.isBefore(now)) {
+        if (sleepFrequency == 'Sekali') {
+          wakeScheduledDate = wakeScheduledDate.add(Duration(days: 1));
+        }
+      }
+
+      final NotificationService notificationService = NotificationService();
+
+      print('Scheduling sleep notification: id=${widget.id}, frequency=$sleepFrequency');
+      notificationService.scheduleNotification(
+        widget.id, // Gunakan id sebagai notification_id
+        'Pengingat Tidur',
+        'Ingatlah untuk tidur sesuai jadwal!',
+        sleepScheduledDate,
+        sleepFrequency,
+      );
+
+      print('Scheduling wake notification: id=${widget.id + 1}, frequency=$sleepFrequency');
+      notificationService.scheduleNotificationWithCustomSound(
+        widget.id + 1, // Gunakan id + 1 sebagai notification_id untuk alarm bangun
+        'Pengingat Bangun',
+        'Ingatlah untuk bangun sesuai jadwal!',
+        wakeScheduledDate,
+        sleepFrequency,
+      );
+
+      Navigator.of(context).pop();
+    } else {
+      // Handle error
+      print('Error: ${response.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response.message)),
+      );
+    }
+  }
+
+  Future<void> _deleteSleepReminder() async {
+    final apiService = ApiService();
+    final response = await apiService.deleteSleepReminder(widget.id);
+
+    if (response.success) {
+      // Cancel scheduled notifications for sleep and wake
+      final NotificationService notificationService = NotificationService();
+      await notificationService.cancelNotification(widget.id); // Cancel sleep notification
+      await notificationService.cancelNotification(widget.id + 1); // Cancel wake notification
+
+>>>>>>> Stashed changes
       Navigator.of(context).pop();
     } else {
       // Handle error
@@ -279,7 +385,11 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
                     ),
                     SizedBox(height: 5),
                     GestureDetector(
+<<<<<<< Updated upstream
                       onTap: () => _showTimePicker(context, false),
+=======
+                      onTap: _isDurasiTidurTerbaikEnabled ? null : () => _showTimePicker(context, false),
+>>>>>>> Stashed changes
                       child: Container(
                         width: 136,
                         height: 60,
@@ -309,6 +419,96 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
                     ),
                     SizedBox(height: 20),
                     Card(
+<<<<<<< Updated upstream
+=======
+                      color: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(99.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 6.0, top: 6.0, bottom: 6.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: SvgPicture.asset(
+                                AppVectors.iconTidur,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Durasi Tidur Terbaik',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Spacer(),
+                            IconButton(
+                              icon: Icon(
+                                Icons.info_rounded,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: Text(
+                                        'Mengaktifkan mode ini akan otomatis membuat alarm bangun 8 jam dari jadwal alarm tidur dan menonaktifkan alarm bangun yang telah diatur.',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            'Tutup',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: AppColors.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            Transform.scale(
+                              scale: 0.9,
+                              child: CupertinoSwitch(
+                                value: _isDurasiTidurTerbaikEnabled,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _isDurasiTidurTerbaikEnabled = value;
+                                    if (value) {
+                                      _calculateWakeTime();
+                                    }
+                                  });
+                                },
+                                activeColor: AppColors.lightGrey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Card(
+>>>>>>> Stashed changes
                       color: Colors.white,
                       elevation: 0.0,
                       shape: RoundedRectangleBorder(
@@ -372,6 +572,31 @@ class _EditJadwalTidurScreenState extends State<EditJadwalTidurScreen> {
               width: double.infinity,
               height: 40,
               child: ElevatedButton(
+<<<<<<< Updated upstream
+=======
+                onPressed: _deleteSleepReminder,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: Text(
+                  'Hapus Jadwal',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              height: 40,
+              child: ElevatedButton(
+>>>>>>> Stashed changes
                 onPressed: _updateSleepReminder,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
