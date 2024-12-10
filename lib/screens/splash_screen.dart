@@ -4,9 +4,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../timezone_helper.dart';
-import 'onboarding_screen.dart';
-import 'login_screen.dart';
+import 'onboarding_screen.dart'; // Import onboarding_screen.dart
+import 'login_screen.dart'; // Import login_screen.dart
+import 'beranda_screen.dart';
+import '../api/notification_service.dart'; // Import NotificationService
+import '../api/api_service.dart'; // Import ApiService
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -16,16 +20,55 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+  final NotificationService _notificationService = NotificationService();
+  final ApiService _apiService = ApiService();
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   Future<void> _checkOnboardingStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isOnboardingComplete = prefs.getBool('isOnboardingComplete') ?? false;
+    bool isFirstInstall = prefs.getBool('isFirstInstall') ?? true;
+
+    if (isFirstInstall) {
+      // Tandai bahwa aplikasi tidak lagi dalam instalasi pertama
+      await prefs.setBool('isFirstInstall', false);
+
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => OnboardingScreen()),
+        );
+      });
+    } else {
+      // Jika onboarding sudah selesai, biarkan _checkAuthToken mengatur navigasi
+      return;
+    }
+  }
+
+  Future<void> _checkAuthToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstInstall = prefs.getBool('isFirstInstall') ?? true;
+
+    // Jika onboarding belum selesai, abaikan logika token
+    if (isFirstInstall) return;
+
+    String? token = await _storage.read(key: 'auth_token');
+
+    if (token != null) {
+      // Verifikasi token jika diperlukan
+    }
 
     Future.delayed(Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => isOnboardingComplete ? LoginScreen() : OnboardingScreen()),
-      );
+      if (token == null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => BerandaScreen()),
+        );
+      }
     });
   }
 
@@ -53,27 +96,105 @@ class _SplashScreenState extends State<SplashScreen> {
       {'id': 4, 'title': 'Notifikasi Makan Malam', 'body': 'Sudah waktunya makan malam!', 'hour': 18, 'minute': 0},
     ];
 
-    for (var notification in notifications) {
-      final now = DateTime.now();
-      final targetTime = DateTime(now.year, now.month, now.day, notification['hour'], notification['minute'], 0);
+    final prefs = await SharedPreferences.getInstance();
+    final now = tz.TZDateTime.now(tz.local);
 
-      tz.TZDateTime scheduledTime;
-      if (targetTime.isBefore(now)) {
-        scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(days: 1));
-        scheduledTime = tz.TZDateTime(tz.local, scheduledTime.year, scheduledTime.month, scheduledTime.day, notification['hour'], notification['minute'], 0);
-      } else {
-        scheduledTime = tz.TZDateTime(tz.local, targetTime.year, targetTime.month, targetTime.day, notification['hour'], notification['minute'], 0);
-      }
+    for (var notification in notifications) {
+      final scheduledTime = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        notification['hour'],
+        notification['minute'],
+      );
+
+      final nextTime = scheduledTime.isBefore(now)
+          ? scheduledTime.add(const Duration(days: 1))
+          : scheduledTime;
 
       await flutterLocalNotificationsPlugin.zonedSchedule(
         notification['id'],
         notification['title'],
         notification['body'],
-        scheduledTime,
+        nextTime,
         notificationDetails,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
         matchDateTimeComponents: DateTimeComponents.time,
+      );
+
+      await prefs.setInt('notification_${notification['id']}', notification['id']);
+    }
+  }
+
+  Future<void> _scheduleDefaultSleepWakeNotifications() async {
+    final now = tz.TZDateTime.now(tz.local);
+
+    final sleepScheduledTime = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      22,
+      0,
+    );
+
+    final wakeScheduledTime = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day + 1,
+      6,
+      0,
+    );
+
+    await _notificationService.scheduleNotification(
+      100,
+      'Pengingat Tidur',
+      'Ayo tidur, jangan forsir dirimu!',
+      sleepScheduledTime,
+      'Harian',
+    );
+
+    await _notificationService.scheduleNotificationWithCustomSound(
+      101,
+      'Pengingat Bangun',
+      'BANGON BANGON SUDAH PAGI!',
+      wakeScheduledTime,
+      'Harian',
+    );
+  }
+
+  Future<void> _scheduleDefaultExerciseNotifications() async {
+    final now = tz.TZDateTime.now(tz.local);
+
+    final List<Map<String, dynamic>> exerciseNotifications = [
+      {'id': 200, 'title': 'Jogging', 'body': 'Ingatlah untuk jogging pagi!', 'hour': 5, 'minute': 0},
+      {'id': 201, 'title': 'Peregangan', 'body': 'Ingatlah untuk peregangan siang!', 'hour': 11, 'minute': 0},
+      {'id': 202, 'title': 'Gym', 'body': 'Ingatlah untuk gym sore!', 'hour': 19, 'minute': 0},
+    ];
+
+    for (var notification in exerciseNotifications) {
+      final scheduledTime = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        notification['hour'],
+        notification['minute'],
+      );
+
+      final nextTime = scheduledTime.isBefore(now)
+          ? scheduledTime.add(const Duration(days: 1))
+          : scheduledTime;
+
+      await _notificationService.scheduleNotification(
+        notification['id'],
+        notification['title'],
+        notification['body'],
+        nextTime,
+        'Harian',
       );
     }
   }
@@ -83,14 +204,38 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _requestNotificationPermission();
     _scheduleRepeatingNotifications();
-    _checkOnboardingStatus();
+    _scheduleDefaultSleepWakeNotifications();
+    _scheduleDefaultExerciseNotifications();
+
+    // Prioritaskan onboarding status
+    _checkOnboardingStatus().then((_) {
+      // Periksa token hanya jika onboarding tidak diperlukan
+      _checkAuthToken();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: FlutterLogo(size: 100),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF1FC29D),
+              Color(0xFF0F5C4A),
+            ],
+            transform: GradientRotation(240 * 3.1415926535 / 180),
+          ),
+        ),
+        child: Center(
+          child: Image.asset(
+            'assets/images/icon.png',
+            width: 100,
+            height: 100,
+          ),
+        ),
       ),
     );
   }

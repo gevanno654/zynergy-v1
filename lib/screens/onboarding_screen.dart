@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
+import '../core/config/assets/app_vectors.dart'; // Import app_vectors.dart
+import '../core/config/theme/app_colors.dart'; // Import app_colors.dart
+import '../core/config/strings/app_text.dart'; // Import app_text.dart
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -14,24 +17,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> _pages = [
     {
-      'title': 'Kesehatan itu investasi\nuntuk masa depan',
-      'description': 'Mulai dari langkah kecil bersama kami,\nkarena hidup aktif dan sehat itu keren!',
-      'image': 'assets/page1.svg',
+      'title': OnboardingText.title1, // Menggunakan konstanta dari app_text.dart
+      'description': OnboardingText.description1, // Menggunakan konstanta dari app_text.dart
+      'image': AppVectors.page1, // Menggunakan konstanta dari app_vectors.dart
     },
     {
-      'title': 'Ngga ada kata terlambat\nbuat mulai sehat',
-      'description': 'Ambil langkah pertama dengan kami,\ndan rasakan manfaatnya di setiap harinya!',
-      'image': 'assets/page2.svg',
+      'title': OnboardingText.title2, // Menggunakan konstanta dari app_text.dart
+      'description': OnboardingText.description2, // Menggunakan konstanta dari app_text.dart
+      'image': AppVectors.page2, // Menggunakan konstanta dari app_vectors.dart
     },
     {
-      'title': 'Temukan cara-cara seru buat jaga\ntubuh dan pikiran tetap sehat',
-      'description': 'Siap untuk hidup lebih baik, lebih aktif, dan lebih bahagia',
-      'image': 'assets/page3.svg',
+      'title': OnboardingText.title3, // Menggunakan konstanta dari app_text.dart
+      'description': OnboardingText.description3, // Menggunakan konstanta dari app_text.dart
+      'image': AppVectors.page3, // Menggunakan konstanta dari app_vectors.dart
     },
     {
-      'title': 'Jadilah generasi yang peduli\ndengan kesehatan diri',
-      'description': 'Kebiasaan sehat untuk masa depan yang lebih cerah',
-      'image': 'assets/page4.svg',
+      'title': OnboardingText.title4, // Menggunakan konstanta dari app_text.dart
+      'description': OnboardingText.description4, // Menggunakan konstanta dari app_text.dart
+      'image': AppVectors.page4, // Menggunakan konstanta dari app_vectors.dart
     },
   ];
 
@@ -54,7 +57,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             onPressed: _skipToLastPage,
             child: Text(
               'Lewati',
-              style: TextStyle(color: Color(0xff3F3F3F), fontSize: 16),
+              style: TextStyle(color: AppColors.darkGrey, fontSize: 16), // Menggunakan konstanta dari app_colors.dart
             ),
           ),
         ],
@@ -87,8 +90,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff1FC29D),
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.primary, // Menggunakan konstanta dari app_colors.dart
+                      foregroundColor: AppColors.secondary, // Menggunakan konstanta dari app_colors.dart
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       )),
@@ -135,7 +138,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildPage({required String title, required String description, required String image}) {
     return Padding(
-      // padding: const EdgeInsets.all(20.0),
       padding: const EdgeInsets.only(bottom: 50.0, left: 20.0, right: 20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -146,9 +148,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               height: 275,
             ),
           ),
-          Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: Color(0xff3F3F3F))),
+          Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: AppColors.darkGrey)), // Menggunakan konstanta dari app_colors.dart
           SizedBox(height: 20),
-          Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Color(0x703F3F3F))),
+          Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: AppColors.darkGrey.withOpacity(0.7))), // Menggunakan konstanta dari app_colors.dart
         ],
       ),
     );
@@ -161,7 +163,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       height: 6,
       width: _currentPage == index ? 20 : 6,
       decoration: BoxDecoration(
-        color: _currentPage == index ? Color(0xff1FC29D) : Color(0x203F3F3F),
+        color: _currentPage == index ? AppColors.primary : AppColors.darkGrey.withOpacity(0.2), // Menggunakan konstanta dari app_colors.dart
         borderRadius: BorderRadius.circular(9999),
       ),
     );
